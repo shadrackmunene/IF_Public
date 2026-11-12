@@ -32,7 +32,7 @@ QUESTIONS = [
         "id": "A101",
         "text": "What is your age in completed years?",
         "widget": "numeric",
-        "min": 16, "max": 35, "value": 23,
+        "min": 18, "max": 30, "value": 23,
     },
     {
         "id": "I904",

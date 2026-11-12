@@ -1,0 +1,2134 @@
+{
+ "note": "Modelled estimates of the Kenyan youth population by predicted segment (census records scored with the survey-trained classifier, probability-weighted, prior-corrected). Segment labels are predicted, not observed; treat counts as approximate and read small cells with caution.",
+ "total_youth": 13244812,
+ "national": [
+  {
+   "segment": "1",
+   "count": 4259431,
+   "pct": 32.2
+  },
+  {
+   "segment": "2",
+   "count": 2653064,
+   "pct": 20.0
+  },
+  {
+   "segment": "3",
+   "count": 2716413,
+   "pct": 20.5
+  },
+  {
+   "segment": "4",
+   "count": 1334592,
+   "pct": 10.1
+  },
+  {
+   "segment": "5",
+   "count": 491111,
+   "pct": 3.7
+  },
+  {
+   "segment": "6",
+   "count": 1790201,
+   "pct": 13.5
+  }
+ ],
+ "by_sex": [
+  {
+   "segment": "1",
+   "count": 2483801,
+   "pct": 36.2,
+   "sex": "Female"
+  },
+  {
+   "segment": "2",
+   "count": 1315243,
+   "pct": 19.2,
+   "sex": "Female"
+  },
+  {
+   "segment": "3",
+   "count": 1385684,
+   "pct": 20.2,
+   "sex": "Female"
+  },
+  {
+   "segment": "4",
+   "count": 539112,
+   "pct": 7.9,
+   "sex": "Female"
+  },
+  {
+   "segment": "5",
+   "count": 221193,
+   "pct": 3.2,
+   "sex": "Female"
+  },
+  {
+   "segment": "6",
+   "count": 908392,
+   "pct": 13.3,
+   "sex": "Female"
+  },
+  {
+   "segment": "1",
+   "count": 1775468,
+   "pct": 27.8,
+   "sex": "Male"
+  },
+  {
+   "segment": "2",
+   "count": 1337697,
+   "pct": 20.9,
+   "sex": "Male"
+  },
+  {
+   "segment": "3",
+   "count": 1330610,
+   "pct": 20.8,
+   "sex": "Male"
+  },
+  {
+   "segment": "4",
+   "count": 795424,
+   "pct": 12.4,
+   "sex": "Male"
+  },
+  {
+   "segment": "5",
+   "count": 269897,
+   "pct": 4.2,
+   "sex": "Male"
+  },
+  {
+   "segment": "6",
+   "count": 881718,
+   "pct": 13.8,
+   "sex": "Male"
+  },
+  {
+   "segment": "1",
+   "count": 162,
+   "pct": 28.2,
+   "sex": "Other/Intersex"
+  },
+  {
+   "segment": "2",
+   "count": 125,
+   "pct": 21.8,
+   "sex": "Other/Intersex"
+  },
+  {
+   "segment": "3",
+   "count": 119,
+   "pct": 20.7,
+   "sex": "Other/Intersex"
+  },
+  {
+   "segment": "4",
+   "count": 56,
+   "pct": 9.8,
+   "sex": "Other/Intersex"
+  },
+  {
+   "segment": "5",
+   "count": 21,
+   "pct": 3.7,
+   "sex": "Other/Intersex"
+  },
+  {
+   "segment": "6",
+   "count": 91,
+   "pct": 15.9,
+   "sex": "Other/Intersex"
+  }
+ ],
+ "by_age_group": [
+  {
+   "segment": "1",
+   "count": 2351610,
+   "pct": 46.3,
+   "age_group": "16-20"
+  },
+  {
+   "segment": "2",
+   "count": 592023,
+   "pct": 11.7,
+   "age_group": "16-20"
+  },
+  {
+   "segment": "3",
+   "count": 1144934,
+   "pct": 22.5,
+   "age_group": "16-20"
+  },
+  {
+   "segment": "4",
+   "count": 381467,
+   "pct": 7.5,
+   "age_group": "16-20"
+  },
+  {
+   "segment": "5",
+   "count": 41491,
+   "pct": 0.8,
+   "age_group": "16-20"
+  },
+  {
+   "segment": "6",
+   "count": 567745,
+   "pct": 11.2,
+   "age_group": "16-20"
+  },
+  {
+   "segment": "1",
+   "count": 1219309,
+   "pct": 28.1,
+   "age_group": "21-25"
+  },
+  {
+   "segment": "2",
+   "count": 961072,
+   "pct": 22.2,
+   "age_group": "21-25"
+  },
+  {
+   "segment": "3",
+   "count": 863408,
+   "pct": 19.9,
+   "age_group": "21-25"
+  },
+  {
+   "segment": "4",
+   "count": 472593,
+   "pct": 10.9,
+   "age_group": "21-25"
+  },
+  {
+   "segment": "5",
+   "count": 200452,
+   "pct": 4.6,
+   "age_group": "21-25"
+  },
+  {
+   "segment": "6",
+   "count": 617230,
+   "pct": 14.2,
+   "age_group": "21-25"
+  },
+  {
+   "segment": "1",
+   "count": 688512,
+   "pct": 18.0,
+   "age_group": "26-30"
+  },
+  {
+   "segment": "2",
+   "count": 1099970,
+   "pct": 28.7,
+   "age_group": "26-30"
+  },
+  {
+   "segment": "3",
+   "count": 708071,
+   "pct": 18.5,
+   "age_group": "26-30"
+  },
+  {
+   "segment": "4",
+   "count": 480531,
+   "pct": 12.5,
+   "age_group": "26-30"
+  },
+  {
+   "segment": "5",
+   "count": 249168,
+   "pct": 6.5,
+   "age_group": "26-30"
+  },
+  {
+   "segment": "6",
+   "count": 605225,
+   "pct": 15.8,
+   "age_group": "26-30"
+  }
+ ],
+ "by_settlement_type": [
+  {
+   "segment": "1",
+   "count": 2947779,
+   "pct": 35.4,
+   "settlement_type": "Rural"
+  },
+  {
+   "segment": "2",
+   "count": 1522567,
+   "pct": 18.3,
+   "settlement_type": "Rural"
+  },
+  {
+   "segment": "3",
+   "count": 1785499,
+   "pct": 21.4,
+   "settlement_type": "Rural"
+  },
+  {
+   "segment": "4",
+   "count": 868752,
+   "pct": 10.4,
+   "settlement_type": "Rural"
+  },
+  {
+   "segment": "5",
+   "count": 191680,
+   "pct": 2.3,
+   "settlement_type": "Rural"
+  },
+  {
+   "segment": "6",
+   "count": 1014357,
+   "pct": 12.2,
+   "settlement_type": "Rural"
+  },
+  {
+   "segment": "1",
+   "count": 1311652,
+   "pct": 26.7,
+   "settlement_type": "Urban"
+  },
+  {
+   "segment": "2",
+   "count": 1130497,
+   "pct": 23.0,
+   "settlement_type": "Urban"
+  },
+  {
+   "segment": "3",
+   "count": 930914,
+   "pct": 18.9,
+   "settlement_type": "Urban"
+  },
+  {
+   "segment": "4",
+   "count": 465840,
+   "pct": 9.5,
+   "settlement_type": "Urban"
+  },
+  {
+   "segment": "5",
+   "count": 299431,
+   "pct": 6.1,
+   "settlement_type": "Urban"
+  },
+  {
+   "segment": "6",
+   "count": 775844,
+   "pct": 15.8,
+   "settlement_type": "Urban"
+  }
+ ],
+ "by_county_zone": [
+  {
+   "segment": "1",
+   "count": 1633856,
+   "pct": 34.0,
+   "county_zone": "ASAL"
+  },
+  {
+   "segment": "2",
+   "count": 913277,
+   "pct": 19.0,
+   "county_zone": "ASAL"
+  },
+  {
+   "segment": "3",
+   "count": 1029781,
+   "pct": 21.4,
+   "county_zone": "ASAL"
+  },
+  {
+   "segment": "4",
+   "count": 506257,
+   "pct": 10.5,
+   "county_zone": "ASAL"
+  },
+  {
+   "segment": "5",
+   "count": 125561,
+   "pct": 2.6,
+   "county_zone": "ASAL"
+  },
+  {
+   "segment": "6",
+   "count": 598566,
+   "pct": 12.5,
+   "county_zone": "ASAL"
+  },
+  {
+   "segment": "1",
+   "count": 1535107,
+   "pct": 34.4,
+   "county_zone": "High-yield/Agricultural zones"
+  },
+  {
+   "segment": "2",
+   "count": 836229,
+   "pct": 18.7,
+   "county_zone": "High-yield/Agricultural zones"
+  },
+  {
+   "segment": "3",
+   "count": 946838,
+   "pct": 21.2,
+   "county_zone": "High-yield/Agricultural zones"
+  },
+  {
+   "segment": "4",
+   "count": 446431,
+   "pct": 10.0,
+   "county_zone": "High-yield/Agricultural zones"
+  },
+  {
+   "segment": "5",
+   "count": 130042,
+   "pct": 2.9,
+   "county_zone": "High-yield/Agricultural zones"
+  },
+  {
+   "segment": "6",
+   "count": 572175,
+   "pct": 12.8,
+   "county_zone": "High-yield/Agricultural zones"
+  },
+  {
+   "segment": "1",
+   "count": 1090467,
+   "pct": 27.5,
+   "county_zone": "Urban"
+  },
+  {
+   "segment": "2",
+   "count": 903558,
+   "pct": 22.8,
+   "county_zone": "Urban"
+  },
+  {
+   "segment": "3",
+   "count": 739794,
+   "pct": 18.6,
+   "county_zone": "Urban"
+  },
+  {
+   "segment": "4",
+   "count": 381904,
+   "pct": 9.6,
+   "county_zone": "Urban"
+  },
+  {
+   "segment": "5",
+   "count": 235508,
+   "pct": 5.9,
+   "county_zone": "Urban"
+  },
+  {
+   "segment": "6",
+   "count": 619459,
+   "pct": 15.6,
+   "county_zone": "Urban"
+  }
+ ],
+ "by_county": [
+  {
+   "segment": "1",
+   "count": 64247,
+   "pct": 35.4,
+   "county": "Baringo"
+  },
+  {
+   "segment": "2",
+   "count": 36085,
+   "pct": 19.9,
+   "county": "Baringo"
+  },
+  {
+   "segment": "3",
+   "count": 34388,
+   "pct": 19.0,
+   "county": "Baringo"
+  },
+  {
+   "segment": "4",
+   "count": 19318,
+   "pct": 10.7,
+   "county": "Baringo"
+  },
+  {
+   "segment": "5",
+   "count": 5219,
+   "pct": 2.9,
+   "county": "Baringo"
+  },
+  {
+   "segment": "6",
+   "count": 21987,
+   "pct": 12.1,
+   "county": "Baringo"
+  },
+  {
+   "segment": "1",
+   "count": 87869,
+   "pct": 35.6,
+   "county": "Bomet"
+  },
+  {
+   "segment": "2",
+   "count": 50466,
+   "pct": 20.4,
+   "county": "Bomet"
+  },
+  {
+   "segment": "3",
+   "count": 45216,
+   "pct": 18.3,
+   "county": "Bomet"
+  },
+  {
+   "segment": "4",
+   "count": 25697,
+   "pct": 10.4,
+   "county": "Bomet"
+  },
+  {
+   "segment": "5",
+   "count": 7836,
+   "pct": 3.2,
+   "county": "Bomet"
+  },
+  {
+   "segment": "6",
+   "count": 29714,
+   "pct": 12.0,
+   "county": "Bomet"
+  },
+  {
+   "segment": "1",
+   "count": 146692,
+   "pct": 33.6,
+   "county": "Bungoma"
+  },
+  {
+   "segment": "2",
+   "count": 77850,
+   "pct": 17.8,
+   "county": "Bungoma"
+  },
+  {
+   "segment": "3",
+   "count": 104983,
+   "pct": 24.0,
+   "county": "Bungoma"
+  },
+  {
+   "segment": "4",
+   "count": 40949,
+   "pct": 9.4,
+   "county": "Bungoma"
+  },
+  {
+   "segment": "5",
+   "count": 11061,
+   "pct": 2.5,
+   "county": "Bungoma"
+  },
+  {
+   "segment": "6",
+   "count": 55276,
+   "pct": 12.7,
+   "county": "Bungoma"
+  },
+  {
+   "segment": "1",
+   "count": 83833,
+   "pct": 35.0,
+   "county": "Busia"
+  },
+  {
+   "segment": "2",
+   "count": 41824,
+   "pct": 17.5,
+   "county": "Busia"
+  },
+  {
+   "segment": "3",
+   "count": 54469,
+   "pct": 22.8,
+   "county": "Busia"
+  },
+  {
+   "segment": "4",
+   "count": 23707,
+   "pct": 9.9,
+   "county": "Busia"
+  },
+  {
+   "segment": "5",
+   "count": 5310,
+   "pct": 2.2,
+   "county": "Busia"
+  },
+  {
+   "segment": "6",
+   "count": 30202,
+   "pct": 12.6,
+   "county": "Busia"
+  },
+  {
+   "segment": "1",
+   "count": 46251,
+   "pct": 36.7,
+   "county": "Elgeyo-Marakwet"
+  },
+  {
+   "segment": "2",
+   "count": 24173,
+   "pct": 19.2,
+   "county": "Elgeyo-Marakwet"
+  },
+  {
+   "segment": "3",
+   "count": 24456,
+   "pct": 19.4,
+   "county": "Elgeyo-Marakwet"
+  },
+  {
+   "segment": "4",
+   "count": 13381,
+   "pct": 10.6,
+   "county": "Elgeyo-Marakwet"
+  },
+  {
+   "segment": "5",
+   "count": 3418,
+   "pct": 2.7,
+   "county": "Elgeyo-Marakwet"
+  },
+  {
+   "segment": "6",
+   "count": 14332,
+   "pct": 11.4,
+   "county": "Elgeyo-Marakwet"
+  },
+  {
+   "segment": "1",
+   "count": 55563,
+   "pct": 35.0,
+   "county": "Embu"
+  },
+  {
+   "segment": "2",
+   "count": 32015,
+   "pct": 20.2,
+   "county": "Embu"
+  },
+  {
+   "segment": "3",
+   "count": 30396,
+   "pct": 19.2,
+   "county": "Embu"
+  },
+  {
+   "segment": "4",
+   "count": 16491,
+   "pct": 10.4,
+   "county": "Embu"
+  },
+  {
+   "segment": "5",
+   "count": 5348,
+   "pct": 3.4,
+   "county": "Embu"
+  },
+  {
+   "segment": "6",
+   "count": 18824,
+   "pct": 11.9,
+   "county": "Embu"
+  },
+  {
+   "segment": "1",
+   "count": 85965,
+   "pct": 32.9,
+   "county": "Garissa"
+  },
+  {
+   "segment": "2",
+   "count": 42674,
+   "pct": 16.3,
+   "county": "Garissa"
+  },
+  {
+   "segment": "3",
+   "count": 69240,
+   "pct": 26.5,
+   "county": "Garissa"
+  },
+  {
+   "segment": "4",
+   "count": 29327,
+   "pct": 11.2,
+   "county": "Garissa"
+  },
+  {
+   "segment": "5",
+   "count": 3729,
+   "pct": 1.4,
+   "county": "Garissa"
+  },
+  {
+   "segment": "6",
+   "count": 30202,
+   "pct": 11.6,
+   "county": "Garissa"
+  },
+  {
+   "segment": "1",
+   "count": 107075,
+   "pct": 36.6,
+   "county": "Homabay"
+  },
+  {
+   "segment": "2",
+   "count": 54489,
+   "pct": 18.6,
+   "county": "Homabay"
+  },
+  {
+   "segment": "3",
+   "count": 57079,
+   "pct": 19.5,
+   "county": "Homabay"
+  },
+  {
+   "segment": "4",
+   "count": 29108,
+   "pct": 9.9,
+   "county": "Homabay"
+  },
+  {
+   "segment": "5",
+   "count": 7622,
+   "pct": 2.6,
+   "county": "Homabay"
+  },
+  {
+   "segment": "6",
+   "count": 37382,
+   "pct": 12.8,
+   "county": "Homabay"
+  },
+  {
+   "segment": "1",
+   "count": 24531,
+   "pct": 32.7,
+   "county": "Isiolo"
+  },
+  {
+   "segment": "2",
+   "count": 13438,
+   "pct": 17.9,
+   "county": "Isiolo"
+  },
+  {
+   "segment": "3",
+   "count": 18274,
+   "pct": 24.4,
+   "county": "Isiolo"
+  },
+  {
+   "segment": "4",
+   "count": 8352,
+   "pct": 11.1,
+   "county": "Isiolo"
+  },
+  {
+   "segment": "5",
+   "count": 1540,
+   "pct": 2.1,
+   "county": "Isiolo"
+  },
+  {
+   "segment": "6",
+   "count": 8774,
+   "pct": 11.7,
+   "county": "Isiolo"
+  },
+  {
+   "segment": "1",
+   "count": 92077,
+   "pct": 27.2,
+   "county": "Kajiado"
+  },
+  {
+   "segment": "2",
+   "count": 78070,
+   "pct": 23.1,
+   "county": "Kajiado"
+  },
+  {
+   "segment": "3",
+   "count": 61422,
+   "pct": 18.1,
+   "county": "Kajiado"
+  },
+  {
+   "segment": "4",
+   "count": 34009,
+   "pct": 10.0,
+   "county": "Kajiado"
+  },
+  {
+   "segment": "5",
+   "count": 17686,
+   "pct": 5.2,
+   "county": "Kajiado"
+  },
+  {
+   "segment": "6",
+   "count": 55298,
+   "pct": 16.3,
+   "county": "Kajiado"
+  },
+  {
+   "segment": "1",
+   "count": 162716,
+   "pct": 34.2,
+   "county": "Kakamega"
+  },
+  {
+   "segment": "2",
+   "count": 82984,
+   "pct": 17.4,
+   "county": "Kakamega"
+  },
+  {
+   "segment": "3",
+   "count": 111800,
+   "pct": 23.5,
+   "county": "Kakamega"
+  },
+  {
+   "segment": "4",
+   "count": 45059,
+   "pct": 9.5,
+   "county": "Kakamega"
+  },
+  {
+   "segment": "5",
+   "count": 12105,
+   "pct": 2.5,
+   "county": "Kakamega"
+  },
+  {
+   "segment": "6",
+   "count": 61742,
+   "pct": 13.0,
+   "county": "Kakamega"
+  },
+  {
+   "segment": "1",
+   "count": 87201,
+   "pct": 33.9,
+   "county": "Kericho"
+  },
+  {
+   "segment": "2",
+   "count": 51184,
+   "pct": 19.9,
+   "county": "Kericho"
+  },
+  {
+   "segment": "3",
+   "count": 49244,
+   "pct": 19.1,
+   "county": "Kericho"
+  },
+  {
+   "segment": "4",
+   "count": 28031,
+   "pct": 10.9,
+   "county": "Kericho"
+  },
+  {
+   "segment": "5",
+   "count": 9550,
+   "pct": 3.7,
+   "county": "Kericho"
+  },
+  {
+   "segment": "6",
+   "count": 32220,
+   "pct": 12.5,
+   "county": "Kericho"
+  },
+  {
+   "segment": "1",
+   "count": 194369,
+   "pct": 26.0,
+   "county": "Kiambu"
+  },
+  {
+   "segment": "2",
+   "count": 176706,
+   "pct": 23.7,
+   "county": "Kiambu"
+  },
+  {
+   "segment": "3",
+   "count": 136518,
+   "pct": 18.3,
+   "county": "Kiambu"
+  },
+  {
+   "segment": "4",
+   "count": 69937,
+   "pct": 9.4,
+   "county": "Kiambu"
+  },
+  {
+   "segment": "5",
+   "count": 52229,
+   "pct": 7.0,
+   "county": "Kiambu"
+  },
+  {
+   "segment": "6",
+   "count": 116724,
+   "pct": 15.6,
+   "county": "Kiambu"
+  },
+  {
+   "segment": "1",
+   "count": 143016,
+   "pct": 35.5,
+   "county": "Kilifi"
+  },
+  {
+   "segment": "2",
+   "count": 70248,
+   "pct": 17.4,
+   "county": "Kilifi"
+  },
+  {
+   "segment": "3",
+   "count": 92680,
+   "pct": 23.0,
+   "county": "Kilifi"
+  },
+  {
+   "segment": "4",
+   "count": 42148,
+   "pct": 10.4,
+   "county": "Kilifi"
+  },
+  {
+   "segment": "5",
+   "count": 7802,
+   "pct": 1.9,
+   "county": "Kilifi"
+  },
+  {
+   "segment": "6",
+   "count": 47496,
+   "pct": 11.8,
+   "county": "Kilifi"
+  },
+  {
+   "segment": "1",
+   "count": 47147,
+   "pct": 32.1,
+   "county": "Kirinyaga"
+  },
+  {
+   "segment": "2",
+   "count": 30623,
+   "pct": 20.9,
+   "county": "Kirinyaga"
+  },
+  {
+   "segment": "3",
+   "count": 28481,
+   "pct": 19.4,
+   "county": "Kirinyaga"
+  },
+  {
+   "segment": "4",
+   "count": 15132,
+   "pct": 10.3,
+   "county": "Kirinyaga"
+  },
+  {
+   "segment": "5",
+   "count": 5664,
+   "pct": 3.9,
+   "county": "Kirinyaga"
+  },
+  {
+   "segment": "6",
+   "count": 19819,
+   "pct": 13.5,
+   "county": "Kirinyaga"
+  },
+  {
+   "segment": "1",
+   "count": 105800,
+   "pct": 31.9,
+   "county": "Kisii"
+  },
+  {
+   "segment": "2",
+   "count": 63692,
+   "pct": 19.2,
+   "county": "Kisii"
+  },
+  {
+   "segment": "3",
+   "count": 73999,
+   "pct": 22.3,
+   "county": "Kisii"
+  },
+  {
+   "segment": "4",
+   "count": 31558,
+   "pct": 9.5,
+   "county": "Kisii"
+  },
+  {
+   "segment": "5",
+   "count": 11505,
+   "pct": 3.5,
+   "county": "Kisii"
+  },
+  {
+   "segment": "6",
+   "count": 45161,
+   "pct": 13.6,
+   "county": "Kisii"
+  },
+  {
+   "segment": "1",
+   "count": 107009,
+   "pct": 32.2,
+   "county": "Kisumu"
+  },
+  {
+   "segment": "2",
+   "count": 66170,
+   "pct": 19.9,
+   "county": "Kisumu"
+  },
+  {
+   "segment": "3",
+   "count": 67050,
+   "pct": 20.2,
+   "county": "Kisumu"
+  },
+  {
+   "segment": "4",
+   "count": 31626,
+   "pct": 9.5,
+   "county": "Kisumu"
+  },
+  {
+   "segment": "5",
+   "count": 13483,
+   "pct": 4.1,
+   "county": "Kisumu"
+  },
+  {
+   "segment": "6",
+   "count": 46548,
+   "pct": 14.0,
+   "county": "Kisumu"
+  },
+  {
+   "segment": "1",
+   "count": 110260,
+   "pct": 37.8,
+   "county": "Kitui"
+  },
+  {
+   "segment": "2",
+   "count": 52174,
+   "pct": 17.9,
+   "county": "Kitui"
+  },
+  {
+   "segment": "3",
+   "count": 59196,
+   "pct": 20.3,
+   "county": "Kitui"
+  },
+  {
+   "segment": "4",
+   "count": 28881,
+   "pct": 9.9,
+   "county": "Kitui"
+  },
+  {
+   "segment": "5",
+   "count": 6434,
+   "pct": 2.2,
+   "county": "Kitui"
+  },
+  {
+   "segment": "6",
+   "count": 34773,
+   "pct": 11.9,
+   "county": "Kitui"
+  },
+  {
+   "segment": "1",
+   "count": 76459,
+   "pct": 34.3,
+   "county": "Kwale"
+  },
+  {
+   "segment": "2",
+   "count": 37354,
+   "pct": 16.7,
+   "county": "Kwale"
+  },
+  {
+   "segment": "3",
+   "count": 53301,
+   "pct": 23.9,
+   "county": "Kwale"
+  },
+  {
+   "segment": "4",
+   "count": 25144,
+   "pct": 11.3,
+   "county": "Kwale"
+  },
+  {
+   "segment": "5",
+   "count": 3664,
+   "pct": 1.6,
+   "county": "Kwale"
+  },
+  {
+   "segment": "6",
+   "count": 27241,
+   "pct": 12.2,
+   "county": "Kwale"
+  },
+  {
+   "segment": "1",
+   "count": 43415,
+   "pct": 33.5,
+   "county": "Laikipia"
+  },
+  {
+   "segment": "2",
+   "count": 26170,
+   "pct": 20.2,
+   "county": "Laikipia"
+  },
+  {
+   "segment": "3",
+   "count": 24330,
+   "pct": 18.8,
+   "county": "Laikipia"
+  },
+  {
+   "segment": "4",
+   "count": 13918,
+   "pct": 10.7,
+   "county": "Laikipia"
+  },
+  {
+   "segment": "5",
+   "count": 4337,
+   "pct": 3.3,
+   "county": "Laikipia"
+  },
+  {
+   "segment": "6",
+   "count": 17537,
+   "pct": 13.5,
+   "county": "Laikipia"
+  },
+  {
+   "segment": "1",
+   "count": 12432,
+   "pct": 33.4,
+   "county": "Lamu"
+  },
+  {
+   "segment": "2",
+   "count": 6559,
+   "pct": 17.6,
+   "county": "Lamu"
+  },
+  {
+   "segment": "3",
+   "count": 8343,
+   "pct": 22.4,
+   "county": "Lamu"
+  },
+  {
+   "segment": "4",
+   "count": 4193,
+   "pct": 11.3,
+   "county": "Lamu"
+  },
+  {
+   "segment": "5",
+   "count": 737,
+   "pct": 2.0,
+   "county": "Lamu"
+  },
+  {
+   "segment": "6",
+   "count": 4993,
+   "pct": 13.4,
+   "county": "Lamu"
+  },
+  {
+   "segment": "1",
+   "count": 114645,
+   "pct": 29.7,
+   "county": "Machakos"
+  },
+  {
+   "segment": "2",
+   "count": 85121,
+   "pct": 22.0,
+   "county": "Machakos"
+  },
+  {
+   "segment": "3",
+   "count": 75086,
+   "pct": 19.4,
+   "county": "Machakos"
+  },
+  {
+   "segment": "4",
+   "count": 37205,
+   "pct": 9.6,
+   "county": "Machakos"
+  },
+  {
+   "segment": "5",
+   "count": 15653,
+   "pct": 4.1,
+   "county": "Machakos"
+  },
+  {
+   "segment": "6",
+   "count": 58422,
+   "pct": 15.1,
+   "county": "Machakos"
+  },
+  {
+   "segment": "1",
+   "count": 88792,
+   "pct": 35.1,
+   "county": "Makueni"
+  },
+  {
+   "segment": "2",
+   "count": 49621,
+   "pct": 19.6,
+   "county": "Makueni"
+  },
+  {
+   "segment": "3",
+   "count": 51812,
+   "pct": 20.5,
+   "county": "Makueni"
+  },
+  {
+   "segment": "4",
+   "count": 24642,
+   "pct": 9.7,
+   "county": "Makueni"
+  },
+  {
+   "segment": "5",
+   "count": 6718,
+   "pct": 2.7,
+   "county": "Makueni"
+  },
+  {
+   "segment": "6",
+   "count": 31698,
+   "pct": 12.5,
+   "county": "Makueni"
+  },
+  {
+   "segment": "1",
+   "count": 74271,
+   "pct": 32.7,
+   "county": "Mandera"
+  },
+  {
+   "segment": "2",
+   "count": 37622,
+   "pct": 16.6,
+   "county": "Mandera"
+  },
+  {
+   "segment": "3",
+   "count": 61677,
+   "pct": 27.1,
+   "county": "Mandera"
+  },
+  {
+   "segment": "4",
+   "count": 24284,
+   "pct": 10.7,
+   "county": "Mandera"
+  },
+  {
+   "segment": "5",
+   "count": 2852,
+   "pct": 1.3,
+   "county": "Mandera"
+  },
+  {
+   "segment": "6",
+   "count": 26526,
+   "pct": 11.7,
+   "county": "Mandera"
+  },
+  {
+   "segment": "1",
+   "count": 41072,
+   "pct": 32.4,
+   "county": "Marsabit"
+  },
+  {
+   "segment": "2",
+   "count": 23892,
+   "pct": 18.9,
+   "county": "Marsabit"
+  },
+  {
+   "segment": "3",
+   "count": 30418,
+   "pct": 24.0,
+   "county": "Marsabit"
+  },
+  {
+   "segment": "4",
+   "count": 13479,
+   "pct": 10.6,
+   "county": "Marsabit"
+  },
+  {
+   "segment": "5",
+   "count": 2590,
+   "pct": 2.0,
+   "county": "Marsabit"
+  },
+  {
+   "segment": "6",
+   "count": 15166,
+   "pct": 12.0,
+   "county": "Marsabit"
+  },
+  {
+   "segment": "1",
+   "count": 146775,
+   "pct": 36.5,
+   "county": "Meru"
+  },
+  {
+   "segment": "2",
+   "count": 76576,
+   "pct": 19.1,
+   "county": "Meru"
+  },
+  {
+   "segment": "3",
+   "count": 80434,
+   "pct": 20.0,
+   "county": "Meru"
+  },
+  {
+   "segment": "4",
+   "count": 40690,
+   "pct": 10.1,
+   "county": "Meru"
+  },
+  {
+   "segment": "5",
+   "count": 11994,
+   "pct": 3.0,
+   "county": "Meru"
+  },
+  {
+   "segment": "6",
+   "count": 45351,
+   "pct": 11.3,
+   "county": "Meru"
+  },
+  {
+   "segment": "1",
+   "count": 111928,
+   "pct": 37.0,
+   "county": "Migori"
+  },
+  {
+   "segment": "2",
+   "count": 54683,
+   "pct": 18.1,
+   "county": "Migori"
+  },
+  {
+   "segment": "3",
+   "count": 58402,
+   "pct": 19.3,
+   "county": "Migori"
+  },
+  {
+   "segment": "4",
+   "count": 31842,
+   "pct": 10.5,
+   "county": "Migori"
+  },
+  {
+   "segment": "5",
+   "count": 7242,
+   "pct": 2.4,
+   "county": "Migori"
+  },
+  {
+   "segment": "6",
+   "count": 38164,
+   "pct": 12.6,
+   "county": "Migori"
+  },
+  {
+   "segment": "1",
+   "count": 101303,
+   "pct": 25.9,
+   "county": "Mombasa"
+  },
+  {
+   "segment": "2",
+   "count": 89554,
+   "pct": 22.9,
+   "county": "Mombasa"
+  },
+  {
+   "segment": "3",
+   "count": 79235,
+   "pct": 20.3,
+   "county": "Mombasa"
+  },
+  {
+   "segment": "4",
+   "count": 39299,
+   "pct": 10.0,
+   "county": "Mombasa"
+  },
+  {
+   "segment": "5",
+   "count": 15902,
+   "pct": 4.1,
+   "county": "Mombasa"
+  },
+  {
+   "segment": "6",
+   "count": 65903,
+   "pct": 16.8,
+   "county": "Mombasa"
+  },
+  {
+   "segment": "1",
+   "count": 80252,
+   "pct": 33.2,
+   "county": "Murang'a"
+  },
+  {
+   "segment": "2",
+   "count": 49148,
+   "pct": 20.3,
+   "county": "Murang'a"
+  },
+  {
+   "segment": "3",
+   "count": 48404,
+   "pct": 20.0,
+   "county": "Murang'a"
+  },
+  {
+   "segment": "4",
+   "count": 24274,
+   "pct": 10.0,
+   "county": "Murang'a"
+  },
+  {
+   "segment": "5",
+   "count": 8162,
+   "pct": 3.4,
+   "county": "Murang'a"
+  },
+  {
+   "segment": "6",
+   "count": 31372,
+   "pct": 13.0,
+   "county": "Murang'a"
+  },
+  {
+   "segment": "1",
+   "count": 399079,
+   "pct": 25.8,
+   "county": "Nairobi City"
+  },
+  {
+   "segment": "2",
+   "count": 368567,
+   "pct": 23.8,
+   "county": "Nairobi City"
+  },
+  {
+   "segment": "3",
+   "count": 270437,
+   "pct": 17.5,
+   "county": "Nairobi City"
+  },
+  {
+   "segment": "4",
+   "count": 144801,
+   "pct": 9.4,
+   "county": "Nairobi City"
+  },
+  {
+   "segment": "5",
+   "count": 111781,
+   "pct": 7.2,
+   "county": "Nairobi City"
+  },
+  {
+   "segment": "6",
+   "count": 251834,
+   "pct": 16.3,
+   "county": "Nairobi City"
+  },
+  {
+   "segment": "1",
+   "count": 186597,
+   "pct": 31.2,
+   "county": "Nakuru"
+  },
+  {
+   "segment": "2",
+   "count": 127474,
+   "pct": 21.3,
+   "county": "Nakuru"
+  },
+  {
+   "segment": "3",
+   "count": 112252,
+   "pct": 18.7,
+   "county": "Nakuru"
+  },
+  {
+   "segment": "4",
+   "count": 61857,
+   "pct": 10.3,
+   "county": "Nakuru"
+  },
+  {
+   "segment": "5",
+   "count": 24206,
+   "pct": 4.0,
+   "county": "Nakuru"
+  },
+  {
+   "segment": "6",
+   "count": 86386,
+   "pct": 14.4,
+   "county": "Nakuru"
+  },
+  {
+   "segment": "1",
+   "count": 84315,
+   "pct": 34.5,
+   "county": "Nandi"
+  },
+  {
+   "segment": "2",
+   "count": 46658,
+   "pct": 19.1,
+   "county": "Nandi"
+  },
+  {
+   "segment": "3",
+   "count": 49331,
+   "pct": 20.2,
+   "county": "Nandi"
+  },
+  {
+   "segment": "4",
+   "count": 25283,
+   "pct": 10.4,
+   "county": "Nandi"
+  },
+  {
+   "segment": "5",
+   "count": 7565,
+   "pct": 3.1,
+   "county": "Nandi"
+  },
+  {
+   "segment": "6",
+   "count": 30998,
+   "pct": 12.7,
+   "county": "Nandi"
+  },
+  {
+   "segment": "1",
+   "count": 107777,
+   "pct": 36.4,
+   "county": "Narok"
+  },
+  {
+   "segment": "2",
+   "count": 57856,
+   "pct": 19.5,
+   "county": "Narok"
+  },
+  {
+   "segment": "3",
+   "count": 51546,
+   "pct": 17.4,
+   "county": "Narok"
+  },
+  {
+   "segment": "4",
+   "count": 35248,
+   "pct": 11.9,
+   "county": "Narok"
+  },
+  {
+   "segment": "5",
+   "count": 6721,
+   "pct": 2.3,
+   "county": "Narok"
+  },
+  {
+   "segment": "6",
+   "count": 36809,
+   "pct": 12.4,
+   "county": "Narok"
+  },
+  {
+   "segment": "1",
+   "count": 47648,
+   "pct": 31.4,
+   "county": "Nyamira"
+  },
+  {
+   "segment": "2",
+   "count": 29290,
+   "pct": 19.3,
+   "county": "Nyamira"
+  },
+  {
+   "segment": "3",
+   "count": 34204,
+   "pct": 22.5,
+   "county": "Nyamira"
+  },
+  {
+   "segment": "4",
+   "count": 14726,
+   "pct": 9.7,
+   "county": "Nyamira"
+  },
+  {
+   "segment": "5",
+   "count": 5262,
+   "pct": 3.5,
+   "county": "Nyamira"
+  },
+  {
+   "segment": "6",
+   "count": 20639,
+   "pct": 13.6,
+   "county": "Nyamira"
+  },
+  {
+   "segment": "1",
+   "count": 52916,
+   "pct": 33.7,
+   "county": "Nyandarua"
+  },
+  {
+   "segment": "2",
+   "count": 31095,
+   "pct": 19.8,
+   "county": "Nyandarua"
+  },
+  {
+   "segment": "3",
+   "count": 32027,
+   "pct": 20.4,
+   "county": "Nyandarua"
+  },
+  {
+   "segment": "4",
+   "count": 15567,
+   "pct": 9.9,
+   "county": "Nyandarua"
+  },
+  {
+   "segment": "5",
+   "count": 4669,
+   "pct": 3.0,
+   "county": "Nyandarua"
+  },
+  {
+   "segment": "6",
+   "count": 20591,
+   "pct": 13.1,
+   "county": "Nyandarua"
+  },
+  {
+   "segment": "1",
+   "count": 54967,
+   "pct": 31.5,
+   "county": "Nyeri"
+  },
+  {
+   "segment": "2",
+   "count": 39284,
+   "pct": 22.5,
+   "county": "Nyeri"
+  },
+  {
+   "segment": "3",
+   "count": 33802,
+   "pct": 19.4,
+   "county": "Nyeri"
+  },
+  {
+   "segment": "4",
+   "count": 15791,
+   "pct": 9.1,
+   "county": "Nyeri"
+  },
+  {
+   "segment": "5",
+   "count": 8103,
+   "pct": 4.6,
+   "county": "Nyeri"
+  },
+  {
+   "segment": "6",
+   "count": 22429,
+   "pct": 12.9,
+   "county": "Nyeri"
+  },
+  {
+   "segment": "1",
+   "count": 29977,
+   "pct": 36.0,
+   "county": "Samburu"
+  },
+  {
+   "segment": "2",
+   "count": 15767,
+   "pct": 18.9,
+   "county": "Samburu"
+  },
+  {
+   "segment": "3",
+   "count": 16157,
+   "pct": 19.4,
+   "county": "Samburu"
+  },
+  {
+   "segment": "4",
+   "count": 9539,
+   "pct": 11.5,
+   "county": "Samburu"
+  },
+  {
+   "segment": "5",
+   "count": 1917,
+   "pct": 2.3,
+   "county": "Samburu"
+  },
+  {
+   "segment": "6",
+   "count": 9859,
+   "pct": 11.8,
+   "county": "Samburu"
+  },
+  {
+   "segment": "1",
+   "count": 94017,
+   "pct": 37.2,
+   "county": "Siaya"
+  },
+  {
+   "segment": "2",
+   "count": 44351,
+   "pct": 17.5,
+   "county": "Siaya"
+  },
+  {
+   "segment": "3",
+   "count": 50462,
+   "pct": 20.0,
+   "county": "Siaya"
+  },
+  {
+   "segment": "4",
+   "count": 26302,
+   "pct": 10.4,
+   "county": "Siaya"
+  },
+  {
+   "segment": "5",
+   "count": 5751,
+   "pct": 2.3,
+   "county": "Siaya"
+  },
+  {
+   "segment": "6",
+   "count": 31966,
+   "pct": 12.6,
+   "county": "Siaya"
+  },
+  {
+   "segment": "1",
+   "count": 29274,
+   "pct": 34.2,
+   "county": "Taita-Taveta"
+  },
+  {
+   "segment": "2",
+   "count": 17498,
+   "pct": 20.4,
+   "county": "Taita-Taveta"
+  },
+  {
+   "segment": "3",
+   "count": 17077,
+   "pct": 19.9,
+   "county": "Taita-Taveta"
+  },
+  {
+   "segment": "4",
+   "count": 8809,
+   "pct": 10.3,
+   "county": "Taita-Taveta"
+  },
+  {
+   "segment": "5",
+   "count": 2431,
+   "pct": 2.8,
+   "county": "Taita-Taveta"
+  },
+  {
+   "segment": "6",
+   "count": 10594,
+   "pct": 12.4,
+   "county": "Taita-Taveta"
+  },
+  {
+   "segment": "1",
+   "count": 25817,
+   "pct": 32.9,
+   "county": "Tana River"
+  },
+  {
+   "segment": "2",
+   "count": 13568,
+   "pct": 17.3,
+   "county": "Tana River"
+  },
+  {
+   "segment": "3",
+   "count": 18824,
+   "pct": 24.0,
+   "county": "Tana River"
+  },
+  {
+   "segment": "4",
+   "count": 9327,
+   "pct": 11.9,
+   "county": "Tana River"
+  },
+  {
+   "segment": "5",
+   "count": 1097,
+   "pct": 1.4,
+   "county": "Tana River"
+  },
+  {
+   "segment": "6",
+   "count": 9809,
+   "pct": 12.5,
+   "county": "Tana River"
+  },
+  {
+   "segment": "1",
+   "count": 35746,
+   "pct": 36.0,
+   "county": "Tharaka-Nithi"
+  },
+  {
+   "segment": "2",
+   "count": 18852,
+   "pct": 19.0,
+   "county": "Tharaka-Nithi"
+  },
+  {
+   "segment": "3",
+   "count": 20059,
+   "pct": 20.2,
+   "county": "Tharaka-Nithi"
+  },
+  {
+   "segment": "4",
+   "count": 9866,
+   "pct": 9.9,
+   "county": "Tharaka-Nithi"
+  },
+  {
+   "segment": "5",
+   "count": 3593,
+   "pct": 3.6,
+   "county": "Tharaka-Nithi"
+  },
+  {
+   "segment": "6",
+   "count": 11202,
+   "pct": 11.3,
+   "county": "Tharaka-Nithi"
+  },
+  {
+   "segment": "1",
+   "count": 87518,
+   "pct": 33.2,
+   "county": "Trans Nzoia"
+  },
+  {
+   "segment": "2",
+   "count": 46939,
+   "pct": 17.8,
+   "county": "Trans Nzoia"
+  },
+  {
+   "segment": "3",
+   "count": 59554,
+   "pct": 22.6,
+   "county": "Trans Nzoia"
+  },
+  {
+   "segment": "4",
+   "count": 26431,
+   "pct": 10.0,
+   "county": "Trans Nzoia"
+  },
+  {
+   "segment": "5",
+   "count": 7899,
+   "pct": 3.0,
+   "county": "Trans Nzoia"
+  },
+  {
+   "segment": "6",
+   "count": 35303,
+   "pct": 13.4,
+   "county": "Trans Nzoia"
+  },
+  {
+   "segment": "1",
+   "count": 105496,
+   "pct": 37.7,
+   "county": "Turkana"
+  },
+  {
+   "segment": "2",
+   "count": 49829,
+   "pct": 17.8,
+   "county": "Turkana"
+  },
+  {
+   "segment": "3",
+   "count": 60624,
+   "pct": 21.7,
+   "county": "Turkana"
+  },
+  {
+   "segment": "4",
+   "count": 30557,
+   "pct": 10.9,
+   "county": "Turkana"
+  },
+  {
+   "segment": "5",
+   "count": 4574,
+   "pct": 1.6,
+   "county": "Turkana"
+  },
+  {
+   "segment": "6",
+   "count": 28574,
+   "pct": 10.2,
+   "county": "Turkana"
+  },
+  {
+   "segment": "1",
+   "count": 102109,
+   "pct": 28.7,
+   "county": "Uasin Gishu"
+  },
+  {
+   "segment": "2",
+   "count": 75087,
+   "pct": 21.1,
+   "county": "Uasin Gishu"
+  },
+  {
+   "segment": "3",
+   "count": 74301,
+   "pct": 20.9,
+   "county": "Uasin Gishu"
+  },
+  {
+   "segment": "4",
+   "count": 34384,
+   "pct": 9.7,
+   "county": "Uasin Gishu"
+  },
+  {
+   "segment": "5",
+   "count": 17907,
+   "pct": 5.0,
+   "county": "Uasin Gishu"
+  },
+  {
+   "segment": "6",
+   "count": 52063,
+   "pct": 14.6,
+   "county": "Uasin Gishu"
+  },
+  {
+   "segment": "1",
+   "count": 46365,
+   "pct": 32.9,
+   "county": "Vihiga"
+  },
+  {
+   "segment": "2",
+   "count": 24764,
+   "pct": 17.6,
+   "county": "Vihiga"
+  },
+  {
+   "segment": "3",
+   "count": 34330,
+   "pct": 24.4,
+   "county": "Vihiga"
+  },
+  {
+   "segment": "4",
+   "count": 12892,
+   "pct": 9.2,
+   "county": "Vihiga"
+  },
+  {
+   "segment": "5",
+   "count": 4072,
+   "pct": 2.9,
+   "county": "Vihiga"
+  },
+  {
+   "segment": "6",
+   "count": 18471,
+   "pct": 13.1,
+   "county": "Vihiga"
+  },
+  {
+   "segment": "1",
+   "count": 67989,
+   "pct": 31.4,
+   "county": "Wajir"
+  },
+  {
+   "segment": "2",
+   "count": 36174,
+   "pct": 16.7,
+   "county": "Wajir"
+  },
+  {
+   "segment": "3",
+   "count": 59806,
+   "pct": 27.6,
+   "county": "Wajir"
+  },
+  {
+   "segment": "4",
+   "count": 24005,
+   "pct": 11.1,
+   "county": "Wajir"
+  },
+  {
+   "segment": "5",
+   "count": 2752,
+   "pct": 1.3,
+   "county": "Wajir"
+  },
+  {
+   "segment": "6",
+   "count": 25571,
+   "pct": 11.8,
+   "county": "Wajir"
+  },
+  {
+   "segment": "1",
+   "count": 58855,
+   "pct": 37.2,
+   "county": "West Pokot"
+  },
+  {
+   "segment": "2",
+   "count": 28847,
+   "pct": 18.2,
+   "county": "West Pokot"
+  },
+  {
+   "segment": "3",
+   "count": 31285,
+   "pct": 19.8,
+   "county": "West Pokot"
+  },
+  {
+   "segment": "4",
+   "count": 17527,
+   "pct": 11.1,
+   "county": "West Pokot"
+  },
+  {
+   "segment": "5",
+   "count": 3416,
+   "pct": 2.2,
+   "county": "West Pokot"
+  },
+  {
+   "segment": "6",
+   "count": 18254,
+   "pct": 11.5,
+   "county": "West Pokot"
+  }
+ ]
+}

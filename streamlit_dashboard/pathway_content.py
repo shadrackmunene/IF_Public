@@ -40,7 +40,7 @@ SEGMENT_CONTENT: dict[str, dict] = {
             "Their own ask: jobs (42%) and access to skills training (23%); 28% regret dropping out of school.",
         ],
         "hcd_link": (
-            "HCD places Work Drifters between Opportunity Access and Establishment; the survey agrees on "
+            "They are seen as sitting between Opportunity Access and Establishment; the survey agrees on "
             "Opportunity Access (56% earn) but only 30% have reached Establishment."
         ),
     },
@@ -61,7 +61,7 @@ SEGMENT_CONTENT: dict[str, dict] = {
             "Their own ask: jobs (53%) and grants or capital (16%); 46% of pathway-takers call it clearly worthwhile.",
         ],
         "hcd_link": (
-            "HCD places the Sampler at Establishment and Upward Investment; the survey puts most of Segment 2 "
+            "They are seen as sitting at Establishment and Upward Investment; the survey puts most of them "
             "at Opportunity Access, with Establishment at 45%."
         ),
     },
@@ -83,7 +83,7 @@ SEGMENT_CONTENT: dict[str, dict] = {
             "Their own ask: jobs (53%) and access to skills training (27%, the most of any segment); 28% regret dropping out of school.",
         ],
         "hcd_link": (
-            "HCD places the Sampler at Establishment and Upward Investment; the survey puts most of Segment 3 "
+            "They are seen as sitting at Establishment and Upward Investment; the survey puts most of them "
             "at Opportunity Access, with 49% trained beyond school."
         ),
     },
@@ -105,7 +105,7 @@ SEGMENT_CONTENT: dict[str, dict] = {
             "Their own ask: jobs (52%) and access to skills training (21%); 59% of pathway-takers call it clearly worthwhile.",
         ],
         "hcd_link": (
-            "HCD places Drifters between Opportunity Access and Establishment; the survey agrees on "
+            "They are seen as sitting between Opportunity Access and Establishment; the survey agrees on "
             "Opportunity Access (82% earn), with 25% in a paid job or business."
         ),
     },
@@ -127,7 +127,7 @@ SEGMENT_CONTENT: dict[str, dict] = {
             "Their own ask: jobs (56%) and grants or capital (24%, the most of any segment). Base is small (n=78).",
         ],
         "hcd_link": (
-            "HCD places the Planner from Establishment through Upward Investment toward Advancement; the "
+            "They are seen as moving from Establishment through Upward Investment toward Advancement; the "
             "survey agrees (63% in a paid job or business, 54% trained further, 35% skills fully used)."
         ),
     },
@@ -149,7 +149,7 @@ SEGMENT_CONTENT: dict[str, dict] = {
             "Their own ask: jobs (54%) and access to skills training (21%); 66% of pathway-takers call it clearly worthwhile, the most of any segment.",
         ],
         "hcd_link": (
-            "HCD has Pivoters cycling at Opportunity Access on unstable work; the survey agrees (82% earn, "
+            "They are seen as cycling at Opportunity Access on unstable work; the survey agrees (82% earn, "
             "43% on mixed income, 41% in a paid job or business)."
         ),
     },

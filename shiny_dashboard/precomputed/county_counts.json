@@ -1,0 +1,47 @@
+[
+ {
+  "county": "Nairobi",
+  "n": 306,
+  "pct": 25.1
+ },
+ {
+  "county": "Nakuru",
+  "n": 175,
+  "pct": 14.3
+ },
+ {
+  "county": "Bungoma",
+  "n": 148,
+  "pct": 12.1
+ },
+ {
+  "county": "Kilifi",
+  "n": 123,
+  "pct": 10.1
+ },
+ {
+  "county": "Meru",
+  "n": 121,
+  "pct": 9.9
+ },
+ {
+  "county": "Machakos",
+  "n": 105,
+  "pct": 8.6
+ },
+ {
+  "county": "Narok",
+  "n": 101,
+  "pct": 8.3
+ },
+ {
+  "county": "Kisumu",
+  "n": 97,
+  "pct": 7.9
+ },
+ {
+  "county": "Marsabit",
+  "n": 45,
+  "pct": 3.7
+ }
+]

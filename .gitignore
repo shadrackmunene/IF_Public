@@ -20,6 +20,9 @@ data/
 raw/
 clean/
 
+# Generated at app startup from the installed plotly package
+shiny_dashboard/www/plotly.min.js
+
 # OS / editor
 .DS_Store
 Thumbs.db

@@ -34,3 +34,14 @@ Each dashboard folder is self-contained, so either can be deployed on its own.
 
 - The pathway narratives and segment descriptions come from the study's deliverable deck.
 - No license has been chosen yet; until one is added, all rights are reserved by default.
+
+## Data files the dashboards read (aggregate-only, safe to publish)
+
+Each app reads its own `precomputed/` folder, so the folder deploys on its own with no extra steps:
+`overview_stats`, `segment_sizes`, `segment_driver_table`, `pathway_stage_table`, `question_catalog`,
+`question_distributions`, `numeric_summary`, `segment_names`, `question_short_labels` and `county_counts` (all `.json`).
+
+- `scripts/aggregate_for_dashboard.py` builds the question, segment and county files from the segmented survey
+  file (run it where that file is held; it never writes respondent rows, IDs or sub-county locations).
+- `scripts/build_short_labels.py` rebuilds the short question titles from `question_catalog.json`.
+- Never commit the respondent-level file (`data/` and `*.csv|*.sav|*.parquet` are in `.gitignore`).

@@ -1,0 +1,898 @@
+[
+ {
+  "code": "residence_group",
+  "segment": "1",
+  "option": 1.0,
+  "option_label": "Urban",
+  "pct": 25.6,
+  "n_valid": 262
+ },
+ {
+  "code": "residence_group",
+  "segment": "1",
+  "option": 2.0,
+  "option_label": "Peri-urban & informal settlement",
+  "pct": 25.6,
+  "n_valid": 262
+ },
+ {
+  "code": "residence_group",
+  "segment": "1",
+  "option": 3.0,
+  "option_label": "Rural (incl. ASAL)",
+  "pct": 48.9,
+  "n_valid": 262
+ },
+ {
+  "code": "residence_group",
+  "segment": "2",
+  "option": 1.0,
+  "option_label": "Urban",
+  "pct": 32.2,
+  "n_valid": 304
+ },
+ {
+  "code": "residence_group",
+  "segment": "2",
+  "option": 2.0,
+  "option_label": "Peri-urban & informal settlement",
+  "pct": 28.0,
+  "n_valid": 304
+ },
+ {
+  "code": "residence_group",
+  "segment": "2",
+  "option": 3.0,
+  "option_label": "Rural (incl. ASAL)",
+  "pct": 39.8,
+  "n_valid": 304
+ },
+ {
+  "code": "residence_group",
+  "segment": "3",
+  "option": 1.0,
+  "option_label": "Urban",
+  "pct": 26.0,
+  "n_valid": 204
+ },
+ {
+  "code": "residence_group",
+  "segment": "3",
+  "option": 2.0,
+  "option_label": "Peri-urban & informal settlement",
+  "pct": 27.9,
+  "n_valid": 204
+ },
+ {
+  "code": "residence_group",
+  "segment": "3",
+  "option": 3.0,
+  "option_label": "Rural (incl. ASAL)",
+  "pct": 46.1,
+  "n_valid": 204
+ },
+ {
+  "code": "residence_group",
+  "segment": "4",
+  "option": 1.0,
+  "option_label": "Urban",
+  "pct": 24.7,
+  "n_valid": 162
+ },
+ {
+  "code": "residence_group",
+  "segment": "4",
+  "option": 2.0,
+  "option_label": "Peri-urban & informal settlement",
+  "pct": 37.7,
+  "n_valid": 162
+ },
+ {
+  "code": "residence_group",
+  "segment": "4",
+  "option": 3.0,
+  "option_label": "Rural (incl. ASAL)",
+  "pct": 37.7,
+  "n_valid": 162
+ },
+ {
+  "code": "residence_group",
+  "segment": "5",
+  "option": 1.0,
+  "option_label": "Urban",
+  "pct": 42.3,
+  "n_valid": 78
+ },
+ {
+  "code": "residence_group",
+  "segment": "5",
+  "option": 2.0,
+  "option_label": "Peri-urban & informal settlement",
+  "pct": 28.2,
+  "n_valid": 78
+ },
+ {
+  "code": "residence_group",
+  "segment": "5",
+  "option": 3.0,
+  "option_label": "Rural (incl. ASAL)",
+  "pct": 29.5,
+  "n_valid": 78
+ },
+ {
+  "code": "residence_group",
+  "segment": "6",
+  "option": 1.0,
+  "option_label": "Urban",
+  "pct": 38.4,
+  "n_valid": 211
+ },
+ {
+  "code": "residence_group",
+  "segment": "6",
+  "option": 2.0,
+  "option_label": "Peri-urban & informal settlement",
+  "pct": 31.3,
+  "n_valid": 211
+ },
+ {
+  "code": "residence_group",
+  "segment": "6",
+  "option": 3.0,
+  "option_label": "Rural (incl. ASAL)",
+  "pct": 30.3,
+  "n_valid": 211
+ },
+ {
+  "code": "residence_group",
+  "segment": "All",
+  "option": 1.0,
+  "option_label": "Urban",
+  "pct": 30.5,
+  "n_valid": 1221
+ },
+ {
+  "code": "residence_group",
+  "segment": "All",
+  "option": 2.0,
+  "option_label": "Peri-urban & informal settlement",
+  "pct": 29.3,
+  "n_valid": 1221
+ },
+ {
+  "code": "residence_group",
+  "segment": "All",
+  "option": 3.0,
+  "option_label": "Rural (incl. ASAL)",
+  "pct": 40.2,
+  "n_valid": 1221
+ },
+ {
+  "code": "has_children",
+  "segment": "1",
+  "option": 0.0,
+  "option_label": "No",
+  "pct": 57.6,
+  "n_valid": 262
+ },
+ {
+  "code": "has_children",
+  "segment": "1",
+  "option": 1.0,
+  "option_label": "Yes",
+  "pct": 42.4,
+  "n_valid": 262
+ },
+ {
+  "code": "has_children",
+  "segment": "2",
+  "option": 0.0,
+  "option_label": "No",
+  "pct": 53.3,
+  "n_valid": 304
+ },
+ {
+  "code": "has_children",
+  "segment": "2",
+  "option": 1.0,
+  "option_label": "Yes",
+  "pct": 46.7,
+  "n_valid": 304
+ },
+ {
+  "code": "has_children",
+  "segment": "3",
+  "option": 0.0,
+  "option_label": "No",
+  "pct": 60.3,
+  "n_valid": 204
+ },
+ {
+  "code": "has_children",
+  "segment": "3",
+  "option": 1.0,
+  "option_label": "Yes",
+  "pct": 39.7,
+  "n_valid": 204
+ },
+ {
+  "code": "has_children",
+  "segment": "4",
+  "option": 0.0,
+  "option_label": "No",
+  "pct": 54.9,
+  "n_valid": 162
+ },
+ {
+  "code": "has_children",
+  "segment": "4",
+  "option": 1.0,
+  "option_label": "Yes",
+  "pct": 45.1,
+  "n_valid": 162
+ },
+ {
+  "code": "has_children",
+  "segment": "5",
+  "option": 0.0,
+  "option_label": "No",
+  "pct": 69.2,
+  "n_valid": 78
+ },
+ {
+  "code": "has_children",
+  "segment": "5",
+  "option": 1.0,
+  "option_label": "Yes",
+  "pct": 30.8,
+  "n_valid": 78
+ },
+ {
+  "code": "has_children",
+  "segment": "6",
+  "option": 0.0,
+  "option_label": "No",
+  "pct": 53.1,
+  "n_valid": 211
+ },
+ {
+  "code": "has_children",
+  "segment": "6",
+  "option": 1.0,
+  "option_label": "Yes",
+  "pct": 46.9,
+  "n_valid": 211
+ },
+ {
+  "code": "has_children",
+  "segment": "All",
+  "option": 0.0,
+  "option_label": "No",
+  "pct": 56.6,
+  "n_valid": 1221
+ },
+ {
+  "code": "has_children",
+  "segment": "All",
+  "option": 1.0,
+  "option_label": "Yes",
+  "pct": 43.4,
+  "n_valid": 1221
+ },
+ {
+  "code": "children_band",
+  "segment": "1",
+  "option": 1.0,
+  "option_label": "1 child",
+  "pct": 48.6,
+  "n_valid": 111
+ },
+ {
+  "code": "children_band",
+  "segment": "1",
+  "option": 2.0,
+  "option_label": "2 children",
+  "pct": 34.2,
+  "n_valid": 111
+ },
+ {
+  "code": "children_band",
+  "segment": "1",
+  "option": 3.0,
+  "option_label": "3 or more children",
+  "pct": 17.1,
+  "n_valid": 111
+ },
+ {
+  "code": "children_band",
+  "segment": "2",
+  "option": 1.0,
+  "option_label": "1 child",
+  "pct": 54.9,
+  "n_valid": 142
+ },
+ {
+  "code": "children_band",
+  "segment": "2",
+  "option": 2.0,
+  "option_label": "2 children",
+  "pct": 36.6,
+  "n_valid": 142
+ },
+ {
+  "code": "children_band",
+  "segment": "2",
+  "option": 3.0,
+  "option_label": "3 or more children",
+  "pct": 8.5,
+  "n_valid": 142
+ },
+ {
+  "code": "children_band",
+  "segment": "3",
+  "option": 1.0,
+  "option_label": "1 child",
+  "pct": 58.0,
+  "n_valid": 81
+ },
+ {
+  "code": "children_band",
+  "segment": "3",
+  "option": 2.0,
+  "option_label": "2 children",
+  "pct": 24.7,
+  "n_valid": 81
+ },
+ {
+  "code": "children_band",
+  "segment": "3",
+  "option": 3.0,
+  "option_label": "3 or more children",
+  "pct": 17.3,
+  "n_valid": 81
+ },
+ {
+  "code": "children_band",
+  "segment": "4",
+  "option": 1.0,
+  "option_label": "1 child",
+  "pct": 56.2,
+  "n_valid": 73
+ },
+ {
+  "code": "children_band",
+  "segment": "4",
+  "option": 2.0,
+  "option_label": "2 children",
+  "pct": 34.2,
+  "n_valid": 73
+ },
+ {
+  "code": "children_band",
+  "segment": "4",
+  "option": 3.0,
+  "option_label": "3 or more children",
+  "pct": 9.6,
+  "n_valid": 73
+ },
+ {
+  "code": "children_band",
+  "segment": "6",
+  "option": 1.0,
+  "option_label": "1 child",
+  "pct": 66.7,
+  "n_valid": 99
+ },
+ {
+  "code": "children_band",
+  "segment": "6",
+  "option": 2.0,
+  "option_label": "2 children",
+  "pct": 24.2,
+  "n_valid": 99
+ },
+ {
+  "code": "children_band",
+  "segment": "6",
+  "option": 3.0,
+  "option_label": "3 or more children",
+  "pct": 9.1,
+  "n_valid": 99
+ },
+ {
+  "code": "children_band",
+  "segment": "All",
+  "option": 1.0,
+  "option_label": "1 child",
+  "pct": 57.4,
+  "n_valid": 530
+ },
+ {
+  "code": "children_band",
+  "segment": "All",
+  "option": 2.0,
+  "option_label": "2 children",
+  "pct": 30.9,
+  "n_valid": 530
+ },
+ {
+  "code": "children_band",
+  "segment": "All",
+  "option": 3.0,
+  "option_label": "3 or more children",
+  "pct": 11.7,
+  "n_valid": 530
+ },
+ {
+  "code": "COUNTY_RES",
+  "segment": "1",
+  "option": 0.0,
+  "option_label": "Nairobi",
+  "pct": 19.8,
+  "n_valid": 262
+ },
+ {
+  "code": "COUNTY_RES",
+  "segment": "1",
+  "option": 1.0,
+  "option_label": "Nakuru",
+  "pct": 14.1,
+  "n_valid": 262
+ },
+ {
+  "code": "COUNTY_RES",
+  "segment": "1",
+  "option": 2.0,
+  "option_label": "Bungoma",
+  "pct": 12.6,
+  "n_valid": 262
+ },
+ {
+  "code": "COUNTY_RES",
+  "segment": "1",
+  "option": 3.0,
+  "option_label": "Kilifi",
+  "pct": 12.2,
+  "n_valid": 262
+ },
+ {
+  "code": "COUNTY_RES",
+  "segment": "1",
+  "option": 4.0,
+  "option_label": "Meru",
+  "pct": 11.8,
+  "n_valid": 262
+ },
+ {
+  "code": "COUNTY_RES",
+  "segment": "1",
+  "option": 5.0,
+  "option_label": "Machakos",
+  "pct": 3.4,
+  "n_valid": 262
+ },
+ {
+  "code": "COUNTY_RES",
+  "segment": "1",
+  "option": 6.0,
+  "option_label": "Narok",
+  "pct": 13.7,
+  "n_valid": 262
+ },
+ {
+  "code": "COUNTY_RES",
+  "segment": "1",
+  "option": 7.0,
+  "option_label": "Kisumu",
+  "pct": 7.6,
+  "n_valid": 262
+ },
+ {
+  "code": "COUNTY_RES",
+  "segment": "1",
+  "option": 8.0,
+  "option_label": "Marsabit",
+  "pct": 4.6,
+  "n_valid": 262
+ },
+ {
+  "code": "COUNTY_RES",
+  "segment": "2",
+  "option": 0.0,
+  "option_label": "Nairobi",
+  "pct": 28.6,
+  "n_valid": 304
+ },
+ {
+  "code": "COUNTY_RES",
+  "segment": "2",
+  "option": 1.0,
+  "option_label": "Nakuru",
+  "pct": 12.8,
+  "n_valid": 304
+ },
+ {
+  "code": "COUNTY_RES",
+  "segment": "2",
+  "option": 2.0,
+  "option_label": "Bungoma",
+  "pct": 13.8,
+  "n_valid": 304
+ },
+ {
+  "code": "COUNTY_RES",
+  "segment": "2",
+  "option": 3.0,
+  "option_label": "Kilifi",
+  "pct": 7.9,
+  "n_valid": 304
+ },
+ {
+  "code": "COUNTY_RES",
+  "segment": "2",
+  "option": 4.0,
+  "option_label": "Meru",
+  "pct": 11.2,
+  "n_valid": 304
+ },
+ {
+  "code": "COUNTY_RES",
+  "segment": "2",
+  "option": 5.0,
+  "option_label": "Machakos",
+  "pct": 6.6,
+  "n_valid": 304
+ },
+ {
+  "code": "COUNTY_RES",
+  "segment": "2",
+  "option": 6.0,
+  "option_label": "Narok",
+  "pct": 6.2,
+  "n_valid": 304
+ },
+ {
+  "code": "COUNTY_RES",
+  "segment": "2",
+  "option": 7.0,
+  "option_label": "Kisumu",
+  "pct": 10.2,
+  "n_valid": 304
+ },
+ {
+  "code": "COUNTY_RES",
+  "segment": "2",
+  "option": 8.0,
+  "option_label": "Marsabit",
+  "pct": 2.6,
+  "n_valid": 304
+ },
+ {
+  "code": "COUNTY_RES",
+  "segment": "3",
+  "option": 0.0,
+  "option_label": "Nairobi",
+  "pct": 18.1,
+  "n_valid": 204
+ },
+ {
+  "code": "COUNTY_RES",
+  "segment": "3",
+  "option": 1.0,
+  "option_label": "Nakuru",
+  "pct": 19.1,
+  "n_valid": 204
+ },
+ {
+  "code": "COUNTY_RES",
+  "segment": "3",
+  "option": 2.0,
+  "option_label": "Bungoma",
+  "pct": 13.2,
+  "n_valid": 204
+ },
+ {
+  "code": "COUNTY_RES",
+  "segment": "3",
+  "option": 3.0,
+  "option_label": "Kilifi",
+  "pct": 13.2,
+  "n_valid": 204
+ },
+ {
+  "code": "COUNTY_RES",
+  "segment": "3",
+  "option": 4.0,
+  "option_label": "Meru",
+  "pct": 13.2,
+  "n_valid": 204
+ },
+ {
+  "code": "COUNTY_RES",
+  "segment": "3",
+  "option": 5.0,
+  "option_label": "Machakos",
+  "pct": 6.9,
+  "n_valid": 204
+ },
+ {
+  "code": "COUNTY_RES",
+  "segment": "3",
+  "option": 6.0,
+  "option_label": "Narok",
+  "pct": 6.9,
+  "n_valid": 204
+ },
+ {
+  "code": "COUNTY_RES",
+  "segment": "3",
+  "option": 7.0,
+  "option_label": "Kisumu",
+  "pct": 2.9,
+  "n_valid": 204
+ },
+ {
+  "code": "COUNTY_RES",
+  "segment": "3",
+  "option": 8.0,
+  "option_label": "Marsabit",
+  "pct": 6.4,
+  "n_valid": 204
+ },
+ {
+  "code": "COUNTY_RES",
+  "segment": "4",
+  "option": 0.0,
+  "option_label": "Nairobi",
+  "pct": 22.2,
+  "n_valid": 162
+ },
+ {
+  "code": "COUNTY_RES",
+  "segment": "4",
+  "option": 1.0,
+  "option_label": "Nakuru",
+  "pct": 17.9,
+  "n_valid": 162
+ },
+ {
+  "code": "COUNTY_RES",
+  "segment": "4",
+  "option": 2.0,
+  "option_label": "Bungoma",
+  "pct": 8.6,
+  "n_valid": 162
+ },
+ {
+  "code": "COUNTY_RES",
+  "segment": "4",
+  "option": 3.0,
+  "option_label": "Kilifi",
+  "pct": 11.7,
+  "n_valid": 162
+ },
+ {
+  "code": "COUNTY_RES",
+  "segment": "4",
+  "option": 4.0,
+  "option_label": "Meru",
+  "pct": 6.2,
+  "n_valid": 162
+ },
+ {
+  "code": "COUNTY_RES",
+  "segment": "4",
+  "option": 5.0,
+  "option_label": "Machakos",
+  "pct": 13.6,
+  "n_valid": 162
+ },
+ {
+  "code": "COUNTY_RES",
+  "segment": "4",
+  "option": 6.0,
+  "option_label": "Narok",
+  "pct": 9.9,
+  "n_valid": 162
+ },
+ {
+  "code": "COUNTY_RES",
+  "segment": "4",
+  "option": 7.0,
+  "option_label": "Kisumu",
+  "pct": 8.0,
+  "n_valid": 162
+ },
+ {
+  "code": "COUNTY_RES",
+  "segment": "5",
+  "option": 0.0,
+  "option_label": "Nairobi",
+  "pct": 34.6,
+  "n_valid": 78
+ },
+ {
+  "code": "COUNTY_RES",
+  "segment": "5",
+  "option": 1.0,
+  "option_label": "Nakuru",
+  "pct": 9.0,
+  "n_valid": 78
+ },
+ {
+  "code": "COUNTY_RES",
+  "segment": "5",
+  "option": 2.0,
+  "option_label": "Bungoma",
+  "pct": 10.3,
+  "n_valid": 78
+ },
+ {
+  "code": "COUNTY_RES",
+  "segment": "5",
+  "option": 5.0,
+  "option_label": "Machakos",
+  "pct": 14.1,
+  "n_valid": 78
+ },
+ {
+  "code": "COUNTY_RES",
+  "segment": "5",
+  "option": 6.0,
+  "option_label": "Narok",
+  "pct": 6.4,
+  "n_valid": 78
+ },
+ {
+  "code": "COUNTY_RES",
+  "segment": "5",
+  "option": 7.0,
+  "option_label": "Kisumu",
+  "pct": 12.8,
+  "n_valid": 78
+ },
+ {
+  "code": "COUNTY_RES",
+  "segment": "6",
+  "option": 0.0,
+  "option_label": "Nairobi",
+  "pct": 31.8,
+  "n_valid": 211
+ },
+ {
+  "code": "COUNTY_RES",
+  "segment": "6",
+  "option": 1.0,
+  "option_label": "Nakuru",
+  "pct": 11.4,
+  "n_valid": 211
+ },
+ {
+  "code": "COUNTY_RES",
+  "segment": "6",
+  "option": 2.0,
+  "option_label": "Bungoma",
+  "pct": 11.4,
+  "n_valid": 211
+ },
+ {
+  "code": "COUNTY_RES",
+  "segment": "6",
+  "option": 3.0,
+  "option_label": "Kilifi",
+  "pct": 9.0,
+  "n_valid": 211
+ },
+ {
+  "code": "COUNTY_RES",
+  "segment": "6",
+  "option": 4.0,
+  "option_label": "Meru",
+  "pct": 7.1,
+  "n_valid": 211
+ },
+ {
+  "code": "COUNTY_RES",
+  "segment": "6",
+  "option": 5.0,
+  "option_label": "Machakos",
+  "pct": 13.7,
+  "n_valid": 211
+ },
+ {
+  "code": "COUNTY_RES",
+  "segment": "6",
+  "option": 6.0,
+  "option_label": "Narok",
+  "pct": 5.2,
+  "n_valid": 211
+ },
+ {
+  "code": "COUNTY_RES",
+  "segment": "6",
+  "option": 7.0,
+  "option_label": "Kisumu",
+  "pct": 8.1,
+  "n_valid": 211
+ },
+ {
+  "code": "COUNTY_RES",
+  "segment": "6",
+  "option": 8.0,
+  "option_label": "Marsabit",
+  "pct": 2.4,
+  "n_valid": 211
+ },
+ {
+  "code": "COUNTY_RES",
+  "segment": "All",
+  "option": 0.0,
+  "option_label": "Nairobi",
+  "pct": 25.1,
+  "n_valid": 1221
+ },
+ {
+  "code": "COUNTY_RES",
+  "segment": "All",
+  "option": 1.0,
+  "option_label": "Nakuru",
+  "pct": 14.3,
+  "n_valid": 1221
+ },
+ {
+  "code": "COUNTY_RES",
+  "segment": "All",
+  "option": 2.0,
+  "option_label": "Bungoma",
+  "pct": 12.1,
+  "n_valid": 1221
+ },
+ {
+  "code": "COUNTY_RES",
+  "segment": "All",
+  "option": 3.0,
+  "option_label": "Kilifi",
+  "pct": 10.1,
+  "n_valid": 1221
+ },
+ {
+  "code": "COUNTY_RES",
+  "segment": "All",
+  "option": 4.0,
+  "option_label": "Meru",
+  "pct": 9.9,
+  "n_valid": 1221
+ },
+ {
+  "code": "COUNTY_RES",
+  "segment": "All",
+  "option": 5.0,
+  "option_label": "Machakos",
+  "pct": 8.6,
+  "n_valid": 1221
+ },
+ {
+  "code": "COUNTY_RES",
+  "segment": "All",
+  "option": 6.0,
+  "option_label": "Narok",
+  "pct": 8.3,
+  "n_valid": 1221
+ },
+ {
+  "code": "COUNTY_RES",
+  "segment": "All",
+  "option": 7.0,
+  "option_label": "Kisumu",
+  "pct": 7.9,
+  "n_valid": 1221
+ },
+ {
+  "code": "COUNTY_RES",
+  "segment": "All",
+  "option": 8.0,
+  "option_label": "Marsabit",
+  "pct": 3.7,
+  "n_valid": 1221
+ }
+]

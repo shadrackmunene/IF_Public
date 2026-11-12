@@ -1,0 +1,352 @@
+[
+ {
+  "segment": "1",
+  "county": "Nairobi",
+  "n": 52,
+  "n_county": 306,
+  "pct_of_county": 17.0
+ },
+ {
+  "segment": "2",
+  "county": "Nairobi",
+  "n": 87,
+  "n_county": 306,
+  "pct_of_county": 28.4
+ },
+ {
+  "segment": "3",
+  "county": "Nairobi",
+  "n": 37,
+  "n_county": 306,
+  "pct_of_county": 12.1
+ },
+ {
+  "segment": "4",
+  "county": "Nairobi",
+  "n": 36,
+  "n_county": 306,
+  "pct_of_county": 11.8
+ },
+ {
+  "segment": "5",
+  "county": "Nairobi",
+  "n": 27,
+  "n_county": 306,
+  "pct_of_county": 8.8
+ },
+ {
+  "segment": "6",
+  "county": "Nairobi",
+  "n": 67,
+  "n_county": 306,
+  "pct_of_county": 21.9
+ },
+ {
+  "segment": "1",
+  "county": "Nakuru",
+  "n": 37,
+  "n_county": 175,
+  "pct_of_county": 21.1
+ },
+ {
+  "segment": "2",
+  "county": "Nakuru",
+  "n": 39,
+  "n_county": 175,
+  "pct_of_county": 22.3
+ },
+ {
+  "segment": "3",
+  "county": "Nakuru",
+  "n": 39,
+  "n_county": 175,
+  "pct_of_county": 22.3
+ },
+ {
+  "segment": "4",
+  "county": "Nakuru",
+  "n": 29,
+  "n_county": 175,
+  "pct_of_county": 16.6
+ },
+ {
+  "segment": "5",
+  "county": "Nakuru",
+  "n": 7,
+  "n_county": 175,
+  "pct_of_county": 4.0
+ },
+ {
+  "segment": "6",
+  "county": "Nakuru",
+  "n": 24,
+  "n_county": 175,
+  "pct_of_county": 13.7
+ },
+ {
+  "segment": "1",
+  "county": "Bungoma",
+  "n": 33,
+  "n_county": 148,
+  "pct_of_county": 22.3
+ },
+ {
+  "segment": "2",
+  "county": "Bungoma",
+  "n": 42,
+  "n_county": 148,
+  "pct_of_county": 28.4
+ },
+ {
+  "segment": "3",
+  "county": "Bungoma",
+  "n": 27,
+  "n_county": 148,
+  "pct_of_county": 18.2
+ },
+ {
+  "segment": "4",
+  "county": "Bungoma",
+  "n": 14,
+  "n_county": 148,
+  "pct_of_county": 9.5
+ },
+ {
+  "segment": "5",
+  "county": "Bungoma",
+  "n": 8,
+  "n_county": 148,
+  "pct_of_county": 5.4
+ },
+ {
+  "segment": "6",
+  "county": "Bungoma",
+  "n": 24,
+  "n_county": 148,
+  "pct_of_county": 16.2
+ },
+ {
+  "segment": "1",
+  "county": "Kilifi",
+  "n": 32,
+  "n_county": 123,
+  "pct_of_county": 26.0
+ },
+ {
+  "segment": "2",
+  "county": "Kilifi",
+  "n": 24,
+  "n_county": 123,
+  "pct_of_county": 19.5
+ },
+ {
+  "segment": "3",
+  "county": "Kilifi",
+  "n": 27,
+  "n_county": 123,
+  "pct_of_county": 22.0
+ },
+ {
+  "segment": "4",
+  "county": "Kilifi",
+  "n": 19,
+  "n_county": 123,
+  "pct_of_county": 15.4
+ },
+ {
+  "segment": "6",
+  "county": "Kilifi",
+  "n": 19,
+  "n_county": 123,
+  "pct_of_county": 15.4
+ },
+ {
+  "segment": "1",
+  "county": "Meru",
+  "n": 31,
+  "n_county": 121,
+  "pct_of_county": 25.6
+ },
+ {
+  "segment": "2",
+  "county": "Meru",
+  "n": 34,
+  "n_county": 121,
+  "pct_of_county": 28.1
+ },
+ {
+  "segment": "3",
+  "county": "Meru",
+  "n": 27,
+  "n_county": 121,
+  "pct_of_county": 22.3
+ },
+ {
+  "segment": "4",
+  "county": "Meru",
+  "n": 10,
+  "n_county": 121,
+  "pct_of_county": 8.3
+ },
+ {
+  "segment": "6",
+  "county": "Meru",
+  "n": 15,
+  "n_county": 121,
+  "pct_of_county": 12.4
+ },
+ {
+  "segment": "1",
+  "county": "Machakos",
+  "n": 9,
+  "n_county": 105,
+  "pct_of_county": 8.6
+ },
+ {
+  "segment": "2",
+  "county": "Machakos",
+  "n": 20,
+  "n_county": 105,
+  "pct_of_county": 19.0
+ },
+ {
+  "segment": "3",
+  "county": "Machakos",
+  "n": 14,
+  "n_county": 105,
+  "pct_of_county": 13.3
+ },
+ {
+  "segment": "4",
+  "county": "Machakos",
+  "n": 22,
+  "n_county": 105,
+  "pct_of_county": 21.0
+ },
+ {
+  "segment": "5",
+  "county": "Machakos",
+  "n": 11,
+  "n_county": 105,
+  "pct_of_county": 10.5
+ },
+ {
+  "segment": "6",
+  "county": "Machakos",
+  "n": 29,
+  "n_county": 105,
+  "pct_of_county": 27.6
+ },
+ {
+  "segment": "1",
+  "county": "Narok",
+  "n": 36,
+  "n_county": 101,
+  "pct_of_county": 35.6
+ },
+ {
+  "segment": "2",
+  "county": "Narok",
+  "n": 19,
+  "n_county": 101,
+  "pct_of_county": 18.8
+ },
+ {
+  "segment": "3",
+  "county": "Narok",
+  "n": 14,
+  "n_county": 101,
+  "pct_of_county": 13.9
+ },
+ {
+  "segment": "4",
+  "county": "Narok",
+  "n": 16,
+  "n_county": 101,
+  "pct_of_county": 15.8
+ },
+ {
+  "segment": "5",
+  "county": "Narok",
+  "n": 5,
+  "n_county": 101,
+  "pct_of_county": 5.0
+ },
+ {
+  "segment": "6",
+  "county": "Narok",
+  "n": 11,
+  "n_county": 101,
+  "pct_of_county": 10.9
+ },
+ {
+  "segment": "1",
+  "county": "Kisumu",
+  "n": 20,
+  "n_county": 97,
+  "pct_of_county": 20.6
+ },
+ {
+  "segment": "2",
+  "county": "Kisumu",
+  "n": 31,
+  "n_county": 97,
+  "pct_of_county": 32.0
+ },
+ {
+  "segment": "3",
+  "county": "Kisumu",
+  "n": 6,
+  "n_county": 97,
+  "pct_of_county": 6.2
+ },
+ {
+  "segment": "4",
+  "county": "Kisumu",
+  "n": 13,
+  "n_county": 97,
+  "pct_of_county": 13.4
+ },
+ {
+  "segment": "5",
+  "county": "Kisumu",
+  "n": 10,
+  "n_county": 97,
+  "pct_of_county": 10.3
+ },
+ {
+  "segment": "6",
+  "county": "Kisumu",
+  "n": 17,
+  "n_county": 97,
+  "pct_of_county": 17.5
+ },
+ {
+  "segment": "1",
+  "county": "Marsabit",
+  "n": 12,
+  "n_county": 45,
+  "pct_of_county": 26.7
+ },
+ {
+  "segment": "2",
+  "county": "Marsabit",
+  "n": 8,
+  "n_county": 45,
+  "pct_of_county": 17.8
+ },
+ {
+  "segment": "3",
+  "county": "Marsabit",
+  "n": 13,
+  "n_county": 45,
+  "pct_of_county": 28.9
+ },
+ {
+  "segment": "6",
+  "county": "Marsabit",
+  "n": 5,
+  "n_county": 45,
+  "pct_of_county": 11.1
+ }
+]

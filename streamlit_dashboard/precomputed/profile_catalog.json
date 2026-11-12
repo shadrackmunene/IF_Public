@@ -1,0 +1,127 @@
+[
+ {
+  "code": "residence_group",
+  "label": "Settlement type",
+  "short": "Settlement type",
+  "section": "Location & household",
+  "dimension": "Context",
+  "type": "categorical",
+  "options": [
+   {
+    "value": 1.0,
+    "label": "Urban",
+    "non_answer": false
+   },
+   {
+    "value": 2.0,
+    "label": "Peri-urban & informal settlement",
+    "non_answer": false
+   },
+   {
+    "value": 3.0,
+    "label": "Rural (incl. ASAL)",
+    "non_answer": false
+   }
+  ]
+ },
+ {
+  "code": "has_children",
+  "label": "Parent or not",
+  "short": "Parent or not",
+  "section": "Location & household",
+  "dimension": "Context",
+  "type": "categorical",
+  "options": [
+   {
+    "value": 0.0,
+    "label": "No",
+    "non_answer": false
+   },
+   {
+    "value": 1.0,
+    "label": "Yes",
+    "non_answer": false
+   }
+  ]
+ },
+ {
+  "code": "children_band",
+  "label": "Number of children (parents only)",
+  "short": "Number of children (parents only)",
+  "section": "Location & household",
+  "dimension": "Context",
+  "type": "categorical",
+  "options": [
+   {
+    "value": 1.0,
+    "label": "1 child",
+    "non_answer": false
+   },
+   {
+    "value": 2.0,
+    "label": "2 children",
+    "non_answer": false
+   },
+   {
+    "value": 3.0,
+    "label": "3 or more children",
+    "non_answer": false
+   }
+  ]
+ },
+ {
+  "code": "COUNTY_RES",
+  "label": "County of residence",
+  "short": "County of residence",
+  "section": "Location & household",
+  "dimension": "Context",
+  "type": "categorical",
+  "options": [
+   {
+    "value": 0.0,
+    "label": "Nairobi",
+    "non_answer": false
+   },
+   {
+    "value": 1.0,
+    "label": "Nakuru",
+    "non_answer": false
+   },
+   {
+    "value": 2.0,
+    "label": "Bungoma",
+    "non_answer": false
+   },
+   {
+    "value": 3.0,
+    "label": "Kilifi",
+    "non_answer": false
+   },
+   {
+    "value": 4.0,
+    "label": "Meru",
+    "non_answer": false
+   },
+   {
+    "value": 5.0,
+    "label": "Machakos",
+    "non_answer": false
+   },
+   {
+    "value": 6.0,
+    "label": "Narok",
+    "non_answer": false
+   },
+   {
+    "value": 7.0,
+    "label": "Kisumu",
+    "non_answer": false
+   },
+   {
+    "value": 8.0,
+    "label": "Marsabit",
+    "non_answer": false
+   }
+  ]
+ }
+]

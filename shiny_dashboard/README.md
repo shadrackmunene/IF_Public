@@ -11,6 +11,16 @@ Three pages:
 ## Run it
 
 ```bash
+*Create a virtual Environment first
+python -m venv venv
+Activate the virtual environment
+*Powershell
+venv\Scripts\Activate.ps1
+*Windows
+venv\Scripts\Activate.bat
+*MacOS
+source venv/bin/activate
+*Install the packages
 pip install -r requirements.txt
 shiny run app.py
 ```
