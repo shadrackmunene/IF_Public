@@ -18,7 +18,7 @@ OUT_DIRS = [ROOT / "shiny_dashboard" / "precomputed", ROOT / "streamlit_dashboar
 
 # Items that are not meaningful as a chart (consent script; coded answers with no labels, where an
 # "average" of the codes would mislead).
-HIDDEN = {"A107", "A103", "C309_1", "C309_2", "C309_3", "C309_4", "G707"}
+HIDDEN = {"A107", "A103", "C309_1", "C309_2", "C309_3", "C309_4", "G707"} | {f"D403_{i}" for i in range(1, 8)}
 
 SINGLE = {
     "A101": "Age (years)", "A105": "Main activity these days",

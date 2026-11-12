@@ -119,6 +119,11 @@ if _profile_cat:
     _dists = pd.concat([_dists, pd.DataFrame(_profile_dist).astype({"segment": str, "code": str})],
                        ignore_index=True)
 
+# Charts with nothing to plot (no segment has enough answers) are dropped rather than shown empty.
+_with_dists = set(_dists.loc[_dists["segment"] != "All", "code"]) if len(_dists) else set()
+_with_nums = set(_nums.loc[_nums["segment"] != "All", "code"]) if len(_nums) else set()
+_catalog = [q for q in _catalog if q["code"] in (_with_nums if q["type"] == "numeric" else _with_dists)]
+
 _prevalence = pd.DataFrame(_opt_json("county_segment_prevalence.json") or [],
                            columns=["segment", "county", "n", "n_county", "pct_of_county"])
 _prevalence["segment"] = _prevalence["segment"].astype(str)

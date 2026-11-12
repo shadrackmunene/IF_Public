@@ -19,6 +19,8 @@ venv/
 data/
 raw/
 clean/
+# ...except the Next.js dashboard's aggregate-only bundle, which the deployed site loads (no respondent-level data)
+!nextjs_dashboard/public/data/
 
 # Generated at app startup from the installed plotly package
 shiny_dashboard/www/plotly.min.js
