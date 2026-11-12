@@ -1,0 +1,81 @@
+/* Colour theme extracted from this project's own deliverable deck - see
+   dashboard/theme.py for the source and exact hex values. */
+:root {
+  --brand: #881946;
+  --dark-text: #414144;
+  --light-bg: #F1F3F9;
+  --accent1: #D3618F;
+  --accent2: #00A7CC;
+  --accent3: #FFAB15;
+  --accent4: #46C781;
+  --accent5: #5073F3;
+  --accent6: #FF801F;
+}
+
+body {
+  color: var(--dark-text);
+  background-color: var(--light-bg);
+}
+
+.navbar, .navbar-default {
+  background-color: var(--brand) !important;
+  border-color: var(--brand) !important;
+  position: sticky;
+  top: 0;
+  z-index: 1030;
+}
+.navbar .navbar-brand, .navbar-nav > li > a {
+  color: #FFFFFF !important;
+  font-weight: 600;
+}
+.navbar-nav > li.active > a, .navbar-nav > li > a:hover {
+  background-color: rgba(255, 255, 255, 0.15) !important;
+  color: #FFFFFF !important;
+}
+
+.card, .well {
+  background-color: #FFFFFF;
+  border: 1px solid #E3E6EE;
+  border-radius: 8px;
+}
+
+.value-box {
+  border-radius: 10px;
+}
+
+h1, h2, h3, h4 {
+  color: var(--brand);
+}
+
+.btn-primary {
+  background-color: var(--brand);
+  border-color: var(--brand);
+}
+.btn-primary:hover {
+  background-color: #6e1438;
+  border-color: #6e1438;
+}
+
+.segment-pill {
+  display: inline-block;
+  padding: 4px 14px;
+  border-radius: 999px;
+  color: white;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.pathway-bullet-list {
+  padding-left: 1.1rem;
+}
+.pathway-bullet-list li {
+  margin-bottom: 0.4rem;
+}
+
+.result-card {
+  background-color: #FFFFFF;
+  border-radius: 12px;
+  padding: 1.5rem;
+  border: 1px solid #E3E6EE;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}

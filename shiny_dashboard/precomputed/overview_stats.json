@@ -1,0 +1,20 @@
+{
+  "n_respondents": 1221,
+  "median_age": 23.0,
+  "pct_female": 51.9,
+  "pct_own_household": 56.2,
+  "pct_not_enrolled": 74.9,
+  "pct_secondary_highest": 39.9,
+  "pct_tvet": 18.9,
+  "pct_university": 6.5,
+  "pct_informal_main": 66.7,
+  "pct_side_activity": 25.1,
+  "pct_self_employed": 19.4,
+  "median_income": 8000.0,
+  "pct_saving": 46.6,
+  "pct_bank_account": 33.1,
+  "pct_smartphone": 81.3,
+  "pct_internet_daily": 63.7,
+  "pct_mobile_money_daily": 64.4,
+  "pct_used_ai": 54.3
+}
