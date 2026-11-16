@@ -1,42 +1,39 @@
-"""Overview statistic cards shared by the Shiny and Streamlit apps: a tinted background per group and an icon
-on every card, so the figures scan quickly. Colours come from the segment palettes in theme.py."""
+"""Headline statistic cards for the Overview page, shared logic with the Next.js port (lib/overviewCards.ts):
+a tinted background per group and an icon on every card, so the figures scan quickly.
+
+Kept deliberately short (feedback of 16.11.2026): whole-number percentages, and figures that need method
+context (household arrangement, enrolment, banking and daily-use measures) are left to the Deep dives tab.
+"""
 
 from __future__ import annotations
 
 from html import escape
 
-from theme import SEGMENT_PALETTES
+from theme import SEGMENT_PALETTES, r0
 
 
 def groups(o: dict) -> list[dict]:
-    """The five overview groups. Each card is (title, value, subtitle, icon)."""
+    """Four overview groups. Each card is (title, value, subtitle, icon)."""
+    pct = lambda k: f"{r0(o[k])}%"  # noqa: E731
     return [
-        {"title": "Youth & household profile", "palette": SEGMENT_PALETTES["2"], "cards": [
-            ("Median age", f"{o['median_age']:.0f}", "years (16-30 range)", "🎂"),
-            ("Female", f"{o['pct_female']}%", f"Male: {100 - o['pct_female']:.1f}%", "👩"),
-            ("Independent household", f"{o['pct_own_household']}%", "live in own/rented household", "🏠"),
+        {"title": "Who they are", "palette": SEGMENT_PALETTES["5"], "cards": [
+            ("Median age", f"{r0(o['median_age'])}", "years", "🎂"),
+            ("Women", pct("pct_female"), "of young people surveyed", "👩"),
+            ("Median income", f"KES {r0(o['median_income'] / 1000)}K", "per month, own income", "💰"),
         ]},
-        {"title": "Education & skills pathway", "palette": SEGMENT_PALETTES["5"], "cards": [
-            ("Not currently enrolled", f"{o['pct_not_enrolled']}%", "in any education/training", "📚"),
-            ("Secondary (highest)", f"{o['pct_secondary_highest']}%", "completed KCSE as highest level", "🏫"),
-            ("TVET/vocational", f"{o['pct_tvet']}%", "completed TVET training", "🛠️"),
-            ("University", f"{o['pct_university']}%", "completed a university degree", "🎓"),
+        {"title": "Education & skills", "palette": SEGMENT_PALETTES["3"], "cards": [
+            ("Secondary", pct("pct_secondary_highest"), "secondary school is their highest level", "🏫"),
+            ("TVET", pct("pct_tvet"), "completed TVET or vocational training", "🛠️"),
+            ("University", pct("pct_university"), "completed a university degree", "🎓"),
         ]},
-        {"title": "Current livelihoods", "palette": SEGMENT_PALETTES["3"], "cards": [
-            ("Informal work", f"{o['pct_informal_main']}%", "of those currently working", "🧰"),
-            ("Side activity", f"{o['pct_side_activity']}%", "have a supplementary income activity", "➕"),
-            ("Self-employed", f"{o['pct_self_employed']}%", "main activity is running a business", "🏪"),
+        {"title": "Work & money", "palette": SEGMENT_PALETTES["2"], "cards": [
+            ("Informal work", pct("pct_informal_main"), "of those working are in informal work", "🧰"),
+            ("Side income", pct("pct_side_activity"), "have a second income activity", "➕"),
+            ("Saving", pct("pct_saving"), "are saving money in any form", "🐖"),
         ]},
-        {"title": "Income & financial security", "palette": SEGMENT_PALETTES["4"], "cards": [
-            ("Median income", f"KES {o['median_income']:,.0f}", "per month, personal income", "💰"),
-            ("Currently saving", f"{o['pct_saving']}%", "saving money in any form", "🐖"),
-            ("Bank account", f"{o['pct_bank_account']}%", "have a personal bank/financial account", "🏦"),
-        ]},
-        {"title": "Digital economy & AI", "palette": SEGMENT_PALETTES["6"], "cards": [
-            ("Smartphone", f"{o['pct_smartphone']}%", "own a smartphone", "📱"),
-            ("Internet daily", f"{o['pct_internet_daily']}%", "access the internet daily", "🌐"),
-            ("Mobile money daily", f"{o['pct_mobile_money_daily']}%", "use mobile money daily", "💸"),
-            ("Used an AI tool", f"{o['pct_used_ai']}%", "have ever used an AI tool", "🤖"),
+        {"title": "Digital & AI", "palette": SEGMENT_PALETTES["6"], "cards": [
+            ("Smartphone", pct("pct_smartphone"), "own a smartphone", "📱"),
+            ("AI tools", pct("pct_used_ai"), "have used an AI tool", "🤖"),
         ]},
     ]
 

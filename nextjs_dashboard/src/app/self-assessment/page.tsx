@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useDashboard } from "@/components/DataProvider";
 import ChartCard from "@/components/ChartCard";
 import SegmentPill from "@/components/SegmentPill";
+import { PathwayBlock, SegmentHeader } from "@/components/SegmentBlocks";
 import { AGE_MAX, AGE_MESSAGE, AGE_MIN, score } from "@/lib/assessment";
 import { dataUrl } from "@/lib/data";
 import { pathwayStageChart, probabilityChart } from "@/lib/plots";
@@ -59,14 +60,14 @@ export default function SelfAssessmentPage() {
     return () => window.removeEventListener("keydown", onKey);
   }, [open]);
 
-  const nBySeg = (s: string) => d.sizes.find((x) => x.segment === s)?.n;
-  const content = result ? d.content[result.segment] : null;
+  const nBySeg: Record<string, number> = Object.fromEntries(d.sizes.map((s) => [s.segment, s.n]));
+  const content = result ? d.profiles[result.segment] : null;
 
   return (
     <main className="page">
       <div className="layout" style={{ gridTemplateColumns: "minmax(0,1fr) minmax(0,1fr)" }}>
         <section>
-          <h2>Instructions to self assessment</h2>
+          <h2>Which segment are you most like?</h2>
           <ol className="instruction-list">
             <li>This tool is for young people aged {AGE_MIN} to {AGE_MAX}.</li>
             <li>You will answer {n} short questions, one at a time. Pick the answer that fits you best, then press Next.</li>
@@ -133,14 +134,16 @@ export default function SelfAssessmentPage() {
           <div className="modal" role="dialog" aria-modal="true" aria-label="Your segment">
             <div className="modal-head"><h3>Your segment</h3><button className="modal-x" aria-label="Close" onClick={() => setOpen(false)}>×</button></div>
             <div className="modal-body">
-              <h3>You match <SegmentPill seg={result.segment} /></h3>
-              <p><strong>{content.headline}</strong></p>
+              <SegmentHeader d={d} seg={result.segment} compact />
+              <h5>How closely you match each segment</h5>
               <ChartCard build={() => probabilityChart(result.probabilities)} height={280} deps={[result]} />
-              <h5>Where you likely sit</h5>
-              <ul className="pathway-bullet-list">{content.where_they_sit.map((b) => <li key={b}>{b}</li>)}</ul>
-              <h5>Your growth pathway - what would help you move on</h5>
-              <ul className="pathway-bullet-list">{content.what_would_help.map((b) => <li key={b}>{b}</li>)}</ul>
-              <ChartCard build={() => pathwayStageChart(d.stages, d.stage_order, result.segment, nBySeg(result.segment))} height={320} deps={[result, d]} />
+              <h5>The pathway for young people like you</h5>
+              <PathwayBlock d={d} seg={result.segment} />
+              <h5>What could help you move forward</h5>
+              <ul className="pathway-bullet-list">
+                {d.profiles[result.segment].opportunities.slice(0, 5).map((o) => <li key={o.title}><b>{o.title}</b>: {o.desc}</li>)}
+              </ul>
+              <ChartCard build={() => pathwayStageChart(d.stages, d.stage_order, result.segment, nBySeg)} height={340} deps={[result, d]} />
             </div>
             <div className="modal-foot"><button className="btn" onClick={() => setOpen(false)}>Close</button></div>
           </div>

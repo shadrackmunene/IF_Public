@@ -228,9 +228,14 @@ def main() -> None:
     args = ap.parse_args()
 
     df, meta = pyreadstat.read_sav(str(args.sav), apply_value_formats=False)
-    names = (df[[SEGMENT_COL, SEGMENT_NAME_COL]].dropna().drop_duplicates()
-             .assign(**{SEGMENT_COL: lambda d: d[SEGMENT_COL].astype(int).astype(str)})
-             .set_index(SEGMENT_COL)[SEGMENT_NAME_COL].to_dict())
+    # Segment names follow the client report's code -> name key (shiny_dashboard/segment_content.py), not the
+    # file's segment_name column: that column predates the final naming and labels codes 2, 3 and 4 wrongly
+    # (code 4 is the apprenticeship segment, Stability Seekers; code 3 is Skill Investors; code 2 is Income
+    # Pragmatists).
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "shiny_dashboard"))
+    from segment_content import NAMES as REPORT_NAMES
+    codes = sorted(df[SEGMENT_COL].dropna().astype(int).astype(str).unique(), key=int)
+    names = {c: REPORT_NAMES[c] for c in codes}
     catalog, dists, nums = build(df, meta)
 
     payloads = {"question_catalog.json": catalog, "question_distributions.json": dists,

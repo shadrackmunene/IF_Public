@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useDashboard } from "@/components/DataProvider";
 import ChartCard from "@/components/ChartCard";
 import { ALL_TOPICS, dimensions, filterQuestions, sectionsFor, topicsFor } from "@/lib/data";
-import { isLikert, questionChart, questionTitle, radarChart } from "@/lib/plots";
+import { chartHeight, isLikert, questionChart, questionTitle, radarChart } from "@/lib/plots";
 import { SEGMENT_COLORS, SEGMENT_IDS, SEGMENT_NAMES } from "@/lib/theme";
 
 export default function DeepDivesPage() {
@@ -95,7 +95,8 @@ export default function DeepDivesPage() {
           )}
           {qs.map((q) => (
             <ChartCard key={`${dim}-${section}-${q.code}`} title={questionTitle(q)}
-              build={() => questionChart(q, d.dists, d.nums, names)} height={340} deps={[d, names, q]} />
+              build={() => questionChart(q, d.dists, d.nums, names)}
+              height={chartHeight(q, d.dists[q.code], Object.keys(names).length)} deps={[d, names, q]} />
           ))}
           {!qs.length && <p className="text-muted">No questions match these choices.</p>}
         </section>

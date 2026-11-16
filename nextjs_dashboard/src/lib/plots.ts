@@ -2,7 +2,7 @@
  *  Segments are always shown by their agreed names; every tooltip carries both the percentage and its
  *  sample size, e.g. "59% (n=124)". */
 import type { DriverRow, NumSummary, PlotSpec, Question, SegmentDist } from "./types";
-import { BRAND, DARK_TEXT, DIVERGING, REF_GREY, SEGMENT_COLORS, SEGMENT_IDS, segName } from "./theme";
+import { BRAND, DARK_TEXT, DIVERGING, REF_GREY, SEGMENT_COLORS, orderSegments, r0, segName } from "./theme";
 
 export const PLOTLY_CONFIG = {
   displaylogo: false,
@@ -60,7 +60,7 @@ function textColor(hex: string): string {
   return 0.299 * r + 0.587 * g + 0.114 * b < 140 ? "#FFFFFF" : DARK_TEXT;
 }
 
-const sortedSegs = (names: Names) => Object.keys(names).sort((a, b) => Number(a) - Number(b));
+const sortedSegs = (names: Names) => orderSegments(Object.keys(names));
 
 const pctOf = (d: SegmentDist | undefined, seg: string, value: number): number => d?.[seg]?.p[key(value)] ?? 0;
 const nOf = (d: SegmentDist | undefined, seg: string): number => d?.[seg]?.n ?? 0;
@@ -70,27 +70,78 @@ const hoverHead = (q: Question) => `<span style='color:#777'>${q.dimension}: ${q
 // ---------------------------------------------------------------------------
 // Overview / Segment Profiles
 // ---------------------------------------------------------------------------
+type Stages = { segment: string; stage: string; pct: number }[];
+const ALL_LABEL = "All young people surveyed";
+
+/** Survey sample by segment (Methodology page; the front page shows national estimates). */
 export function segmentSizeChart(sizes: { segment: string; n: number; pct: number }[]): PlotSpec {
-  const top = Math.max(...sizes.map((s) => s.pct));
+  const sorted = orderSegments(sizes.map((s) => s.segment)).map((seg) => sizes.find((s) => s.segment === seg)!);
+  const pcts = sorted.map((s) => r0(s.pct));
   return {
     data: [{
       type: "bar",
-      x: sizes.map((s) => segName(s.segment)),
-      y: sizes.map((s) => s.pct),
-      marker: { color: sizes.map((s) => SEGMENT_COLORS[s.segment]) },
-      customdata: sizes.map((s) => s.n),
-      text: sizes.map((s) => `${s.pct}%`),
+      x: sorted.map((s) => segName(s.segment)),
+      y: pcts,
+      marker: { color: sorted.map((s) => SEGMENT_COLORS[s.segment]) },
+      customdata: sorted.map((s) => s.n),
+      text: pcts.map((p) => `${p}%`),
       textposition: "outside",
       cliponaxis: false,
-      hovertemplate: "<b>%{x}</b><br>%{y}% of respondents (n=%{customdata})<extra></extra>",
+      hovertemplate: "<b>%{x}</b><br>%{y}% of young people surveyed (n=%{customdata})<extra></extra>",
     }],
-    layout: baseLayout(340, {
+    layout: baseLayout(320, {
       xaxis: axis({ showgrid: false }),
-      yaxis: axis({ title: { text: "% of respondents" }, range: [0, top * 1.25] }),
+      yaxis: axis({ title: { text: "% of young people surveyed" }, range: [0, Math.max(...pcts) * 1.25] }),
     }),
   };
 }
 
+// Directional estimates: always shown in millions, never as exact counts.
+const people = (n: number) => `${(n / 1e6).toFixed(1)}M`;
+
+/** Donut of each segment's estimated share of Kenyan youth (survey shares if the sizing file is missing). */
+export function segmentShareDonut(
+  population: { national: { segment: string; count: number; pct: number }[] } | null,
+  sizes: { segment: string; n: number; pct: number }[],
+): PlotSpec {
+  const rows: Record<string, [number, number]> = {};
+  if (population?.national?.length) for (const r of population.national) rows[String(r.segment)] = [r.pct, r.count];
+  else for (const r of sizes) rows[r.segment] = [r.pct, r.n];
+  const segs = orderSegments(Object.keys(rows));
+  const hover = population?.national?.length
+    ? "<b>%{label}</b><br>%{customdata[0]}% of young people, about %{customdata[1]}<extra></extra>"
+    : "<b>%{label}</b><br>%{customdata[0]}% of young people surveyed<extra></extra>";
+  return {
+    data: [{
+      type: "pie", labels: segs.map(segName), values: segs.map((s) => rows[s][0]), hole: 0.55, sort: false,
+      direction: "clockwise", marker: { colors: segs.map((s) => SEGMENT_COLORS[s]), line: { color: "white", width: 2 } },
+      textinfo: "percent", texttemplate: "%{percent:.0%}", textfont: { size: 13 },
+      customdata: segs.map((s) => [r0(rows[s][0]), people(rows[s][1])]), hovertemplate: hover,
+    }],
+    layout: {
+      height: 340, margin: { l: 10, r: 10, t: 10, b: 10 }, paper_bgcolor: "white", autosize: true,
+      font: { family: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif", color: DARK_TEXT, size: 12 },
+      legend: { orientation: "v", x: 1, y: 0.5, font: { size: 13 } }, showlegend: true,
+    },
+  };
+}
+
+/** " ▲" where the segment is the highest of the six on a driver, " ▼" where it is the lowest. */
+function rankMarks(sub: DriverRow[], labels: string[], segment: string): string[] {
+  return labels.map((lbl) => {
+    const rows = sub.filter((r) => r.label === lbl && r.segment !== "All");
+    const v = rows.find((r) => r.segment === segment)?.value;
+    if (v === undefined || rows.length < 2) return "";
+    const vals = rows.map((r) => r.value);
+    const hi = Math.max(...vals);
+    const lo = Math.min(...vals);
+    if (hi === lo) return "";
+    return v === hi ? " ▲" : v === lo ? " ▼" : "";
+  });
+}
+
+/** Grouped bars per driver: the selected segment vs all respondents. ▲/▼ on the segment's bar marks a driver
+ *  where it is the highest/lowest of the six segments. */
 export function driverBarChart(
   drivers: DriverRow[], category: string, highlight: string | null, kind: "pct" | "score",
   nBySegment: Record<string, number>,
@@ -103,63 +154,107 @@ export function driverBarChart(
     const r = sub.find((x) => x.label === lbl && x.segment === seg);
     return r ? r.value : null;
   };
-  const fmt = (v: number | null) => (v === null ? "" : wantPct ? `${v.toFixed(0)}%` : v.toFixed(2));
+  const fmt = (v: number | null) => (v === null ? "" : wantPct ? `${r0(v)}%` : v.toFixed(1));
   const wrapped = labels.map((l) => wrap(l, 15));
   const allVals = labels.map((l) => val(l, "All"));
   const traces: any[] = [{
-    type: "bar", x: wrapped, y: allVals, name: "All respondents", marker: { color: "#C9CDD6" },
+    type: "bar", x: wrapped, y: allVals, name: ALL_LABEL, marker: { color: "#C9CDD6" },
     text: allVals.map(fmt), textposition: "outside", textfont: { size: 10 }, cliponaxis: false,
-    customdata: labels.map((l, i) => [l, fmt(allVals[i]), nBySegment["All"] ?? ""]),
-    hovertemplate: "<b>%{customdata[0]}</b><br>All respondents: %{customdata[1]} (n=%{customdata[2]})<extra></extra>",
+    customdata: labels.map((l, i) => [l, fmt(allVals[i])]),
+    hovertemplate: `<b>%{customdata[0]}</b><br>${ALL_LABEL}: %{customdata[1]}<extra></extra>`,
   }];
   const cands = allVals.filter((v): v is number => v !== null);
   if (highlight) {
     const segVals = labels.map((l) => val(l, highlight));
+    const marks = rankMarks(sub, labels, highlight);
+    const note: Record<string, string> = { " ▲": "<br>Highest of the six segments", " ▼": "<br>Lowest of the six segments" };
     traces.push({
       type: "bar", x: wrapped, y: segVals, name: segName(highlight), marker: { color: SEGMENT_COLORS[highlight] ?? BRAND },
-      text: segVals.map(fmt), textposition: "outside", textfont: { size: 10 }, cliponaxis: false,
-      customdata: labels.map((l, i) => [l, fmt(segVals[i]), nBySegment[highlight] ?? ""]),
-      hovertemplate: `<b>%{customdata[0]}</b><br>${segName(highlight)}: %{customdata[1]} (n=%{customdata[2]})<extra></extra>`,
+      text: segVals.map((v, i) => fmt(v) + marks[i]), textposition: "outside", textfont: { size: 10 }, cliponaxis: false,
+      customdata: labels.map((l, i) => [l, fmt(segVals[i]), nBySegment[highlight] ?? "", note[marks[i]] ?? ""]),
+      hovertemplate: `<b>%{customdata[0]}</b><br>${segName(highlight)}: %{customdata[1]}%{customdata[3]}<extra></extra>`,
     });
     cands.push(...segVals.filter((v): v is number => v !== null));
   }
   const top = Math.max(1, ...cands);
   return {
     data: traces,
-    layout: baseLayout(380, {
-      barmode: "group", legend: { orientation: "h", y: 1.12, x: 0 }, margin: { l: 10, r: 10, t: 40, b: 10 },
+    layout: baseLayout(360, {
+      barmode: "group", legend: { orientation: "h", y: 1.14, x: 0 }, margin: { l: 10, r: 10, t: 40, b: 10 },
       yaxis: axis({ range: [0, top * 1.25], ticksuffix: wantPct ? "%" : "", title: { text: wantPct ? "% of segment" : "Average" } }),
       xaxis: axis({ showgrid: false, tickfont: { size: 10 } }),
     }),
   };
 }
 
-export function pathwayStageChart(
-  stages: { segment: string; stage: string; pct: number }[], order: string[], segment: string, n?: number,
-): PlotSpec {
+/** All-respondent share for each pathway stage: segment shares weighted by segment size. */
+export function pathwayAllValues(stages: Stages, order: string[], nBySegment: Record<string, number>): number[] {
+  return order.map((stage) => {
+    const rows = stages.filter((r) => r.stage === stage);
+    const den = rows.reduce((a, r) => a + (nBySegment[r.segment] ?? 0), 0);
+    const num = rows.reduce((a, r) => a + r.pct * (nBySegment[r.segment] ?? 0), 0);
+    return den ? num / den : 0;
+  });
+}
+
+/** Share of the segment reaching each pathway stage, next to all young people surveyed. */
+export function pathwayStageChart(stages: Stages, order: string[], segment: string, nBySegment: Record<string, number>): PlotSpec {
   const vals = order.map((s) => stages.find((r) => r.segment === segment && r.stage === s)?.pct ?? 0);
+  const allv = pathwayAllValues(stages, order, nBySegment);
+  const x = order.map((s) => s.replace(" ", "<br>"));
   return {
-    data: [{
-      type: "bar", x: order.map((s) => s.replace(" ", "<br>")), y: vals,
-      marker: { color: SEGMENT_COLORS[segment] ?? BRAND }, text: vals.map((p) => `${p}%`), textposition: "outside",
-      cliponaxis: false, customdata: order.map((s) => [s, n ?? ""]),
-      hovertemplate: `<b>%{customdata[0]}</b><br>%{y}% of ${segName(segment)} meet this stage proxy (n=%{customdata[1]})<extra></extra>`,
-    }],
-    layout: baseLayout(320, {
-      yaxis: axis({ title: { text: "% of segment meeting stage proxy" }, range: [0, 110] }),
-      xaxis: axis(),
+    data: [
+      { type: "bar", x, y: allv, name: ALL_LABEL, marker: { color: "#C9CDD6" }, text: allv.map((p) => `${r0(p)}%`),
+        textposition: "outside", cliponaxis: false, customdata: order,
+        hovertemplate: `<b>%{customdata}</b><br>${ALL_LABEL}: %{text}<extra></extra>` },
+      { type: "bar", x, y: vals, name: segName(segment), marker: { color: SEGMENT_COLORS[segment] ?? BRAND },
+        text: vals.map((p) => `${r0(p)}%`), textposition: "outside", cliponaxis: false, customdata: order,
+        hovertemplate: `<b>%{customdata}</b><br>${segName(segment)}: %{text}<extra></extra>` },
+    ],
+    layout: baseLayout(340, {
+      barmode: "group", legend: { orientation: "h", y: 1.14, x: 0 }, margin: { l: 10, r: 10, t: 40, b: 10 },
+      yaxis: axis({ title: { text: "% who have reached the stage" }, range: [0, 115], ticksuffix: "%" }),
+      xaxis: axis({ showgrid: false }),
+    }),
+  };
+}
+
+/** All six segments side by side on each pathway stage, with the all-respondent share as a grey marker. */
+export function pathwayCompareChart(stages: Stages, order: string[], nBySegment: Record<string, number>): PlotSpec {
+  const x = order.map((s) => s.replace(" ", "<br>"));
+  const segs = orderSegments(new Set(stages.map((r) => r.segment)));
+  const data: any[] = segs.map((seg) => {
+    const vals = order.map((s) => stages.find((r) => r.segment === seg && r.stage === s)?.pct ?? 0);
+    return {
+      type: "bar", x, y: vals, name: segName(seg), marker: { color: SEGMENT_COLORS[seg] ?? BRAND },
+      customdata: order.map((s, i) => [s, r0(vals[i])]),
+      hovertemplate: `<b>%{customdata[0]}</b><br>${segName(seg)}: %{customdata[1]}%<extra></extra>`,
+    };
+  });
+  const allv = pathwayAllValues(stages, order, nBySegment);
+  data.push({
+    type: "scatter", mode: "markers", x, y: allv, name: ALL_LABEL, customdata: allv.map(r0),
+    marker: { symbol: "line-ew", size: 60, color: REF_GREY, line: { color: REF_GREY, width: 2.5 } },
+    hovertemplate: `${ALL_LABEL}: %{customdata}%<extra></extra>`,
+  });
+  return {
+    data,
+    layout: baseLayout(400, {
+      barmode: "group", legend: { orientation: "h", y: 1.18, x: 0 }, margin: { l: 10, r: 10, t: 56, b: 10 },
+      yaxis: axis({ title: { text: "% who have reached the stage" }, range: [0, 105], ticksuffix: "%" }),
+      xaxis: axis({ showgrid: false }),
     }),
   };
 }
 
 export function probabilityChart(prob: Record<string, number>): PlotSpec {
-  const segs = Object.keys(prob).sort((a, b) => Number(a) - Number(b));
+  const segs = orderSegments(Object.keys(prob));
   const vals = segs.map((s) => 100 * prob[s]);
   return {
     data: [{
       type: "bar", x: segs.map(segName), y: vals, marker: { color: segs.map((s) => SEGMENT_COLORS[s]) },
-      text: vals.map((v) => `${v.toFixed(0)}%`), textposition: "outside", cliponaxis: false,
-      hovertemplate: "<b>%{x}</b><br>Match probability: %{y:.1f}%<extra></extra>",
+      text: vals.map((v) => `${r0(v)}%`), textposition: "outside", cliponaxis: false,
+      hovertemplate: "<b>%{x}</b><br>Match probability: %{y:.0f}%<extra></extra>",
     }],
     layout: baseLayout(280, {
       yaxis: axis({ title: { text: "Match probability (%)" }, range: [0, 112] }),
@@ -231,7 +326,7 @@ export function likertQuestionChart(q: Question, dist: SegmentDist | undefined, 
     return {
       type: "bar", orientation: "h", y: labels, x: xs, base, name: o.label, showlegend: false,
       marker: { color: colors[p], line: { color: "white", width: 0.8 } },
-      customdata: segs.map((s) => [o.label, vals["All"][p].toFixed(1), nOf(dist, s), nOf(dist, "All")]),
+      customdata: segs.map((s) => [o.label, r0(vals["All"][p]), nOf(dist, s), nOf(dist, "All")]),
       text: xs.map((x) => (x >= 16 ? o.label : "")), textposition: "inside", insidetextanchor: "middle",
       textfont: { size: 10, color: textColor(colors[p]) },
       hovertemplate: hoverHead(q) + "<b>%{y}</b><br>%{customdata[0]}: <b>%{x:.0f}% (n=%{customdata[2]})</b><br>" +
@@ -244,7 +339,7 @@ export function likertQuestionChart(q: Question, dist: SegmentDist | undefined, 
   const allLow = sum(a.slice(0, half)) + (odd ? a[half] / 2 : 0);
   const shapes: any[] = [];
   const annotations: any[] = [];
-  for (const [x, txt] of [[allHigh, `All: ${allHigh.toFixed(0)}%`], [-allLow, `All: ${allLow.toFixed(0)}%`]] as [number, string][]) {
+  for (const [x, txt] of [[allHigh, `All: ${r0(allHigh)}%`], [-allLow, `All: ${r0(allLow)}%`]] as [number, string][]) {
     shapes.push({ type: "line", xref: "x", yref: "paper", x0: x, x1: x, y0: 0, y1: 1,
       line: { color: REF_GREY, width: 1.2, dash: "dash" } });
     annotations.push({ xref: "x", yref: "paper", x, y: 1, yanchor: "bottom", xanchor: "center", text: txt,
@@ -307,8 +402,8 @@ export function binaryQuestionChart(q: Question, dist: SegmentDist | undefined, 
   const overall = dist?.["All"]?.p[key(pos.value)];
   const nn: Record<string, number> = {};
   for (const s of [...segs, "All"]) nn[s] = nOf(dist, s);
-  return verticalSegmentBars(segs, vals, vals.map((v) => `${v.toFixed(0)}%`), pos.label, overall ?? null,
-    overall !== undefined ? `All: ${overall.toFixed(0)}%` : "", `% ${pos.label}`, q, nn,
+  return verticalSegmentBars(segs, vals, vals.map((v) => `${r0(v)}%`), pos.label, overall ?? null,
+    overall !== undefined ? `All: ${r0(overall)}%` : "", `% ${pos.label}`, q, nn,
     Math.max(0, ...vals) > 60 ? 100 : undefined, true);
 }
 
@@ -344,10 +439,10 @@ export function columnsQuestionChart(q: Question, dist: SegmentDist | undefined,
     const ya = n === 1 ? "y" : `y${n}`;
     const vals = valid.map((o) => pctOf(dist, s, o.value));
     const allv = valid.map((o) => pctOf(dist, "All", o.value));
-    const cd = valid.map((o, k) => [o.label, allv[k].toFixed(1), nOf(dist, s), nOf(dist, "All")]);
+    const cd = valid.map((o, k) => [o.label, r0(allv[k]), nOf(dist, s), nOf(dist, "All")]);
     const hov = hoverHead(q) + `<b>${segName(s)}</b><br>%{customdata[0]}: <b>%{${horizontal ? "x" : "y"}:.0f}% (n=%{customdata[2]})</b><br>` +
       "All respondents: %{customdata[1]}% (n=%{customdata[3]})<extra></extra>";
-    const txt = vals.map((v) => (v >= 3 ? `${v.toFixed(0)}%` : ""));
+    const txt = vals.map((v) => (v >= 3 ? `${r0(v)}%` : ""));
     if (horizontal) {
       data.push({ type: "bar", orientation: "h", y: pos, x: vals, xaxis: xa, yaxis: ya, marker: { color: SEGMENT_COLORS[s] },
         showlegend: false, text: txt, textposition: "outside", textfont: { size: 9 }, cliponaxis: false, customdata: cd, hovertemplate: hov });
@@ -434,21 +529,82 @@ export function radarChart(nums: Record<string, NumSummary>, names: Names): Plot
   };
 }
 
-export type ChartKind = "numeric" | "likert" | "binary" | "columns";
+// Answer colours for pie slices (answers, not segments, so a neutral categorical set).
+const PIE_COLORS = ["#0F6B52", "#F2A541", "#5B8DEF", "#C8553D", "#8E6C8A", "#9AA0A6"];
+const PIE_MAX_OPTIONS = 6;
 
-export function chartKind(q: Question): ChartKind {
+/** True when the answer shares add up to 100% (one answer per person), so a pie is a fair picture. */
+export function isSingleChoice(q: Question, dist: SegmentDist | undefined): boolean {
+  const valid = validOptions(q);
+  if (!dist?.["All"] || !valid.length) return false;
+  const total = sum(valid.map((o) => pctOf(dist, "All", o.value)));
+  return total >= 98.5 && total <= 101.5;
+}
+
+/** Small-multiple donuts, one per segment plus all young people surveyed, for single-choice questions with up
+ *  to six answers. */
+export function pieQuestionChart(q: Question, dist: SegmentDist | undefined, names: Names): PlotSpec {
+  const segs = sortedSegs(names);
+  const valid = validOptions(q);
+  const panels = [...segs, "All"];
+  const ncols = Math.min(4, panels.length);
+  const nrows = Math.ceil(panels.length / ncols);
+  const w = 1 / ncols;
+  const h = 1 / nrows;
+  const data = panels.map((s, i) => {
+    const r = Math.floor(i / ncols);
+    const c = i % ncols;
+    const title = s === "All" ? "All surveyed" : segName(s);
+    const vals = valid.map((o) => pctOf(dist, s, o.value));
+    return {
+      type: "pie", labels: valid.map((o) => o.label), values: vals, hole: 0.45, sort: false, direction: "clockwise",
+      marker: { colors: PIE_COLORS.slice(0, valid.length), line: { color: "white", width: 1.5 } },
+      domain: { x: [c * w + 0.02, (c + 1) * w - 0.02], y: [1 - (r + 1) * h + 0.06, 1 - r * h - 0.08] },
+      textinfo: "percent", texttemplate: "%{percent:.0%}", textfont: { size: 10 },
+      title: { text: wrap(title, 22), font: { size: 12, color: DARK_TEXT }, position: "top center" },
+      customdata: vals.map(r0), showlegend: i === 0,
+      hovertemplate: `<b>${title}</b><br>%{label}: <b>%{customdata}%</b> (n=${nOf(dist, s)})<extra></extra>`,
+    };
+  });
+  return {
+    data,
+    layout: {
+      height: 60 + 230 * nrows + 20 * Math.ceil(valid.length / 2), margin: { l: 10, r: 10, t: 20, b: 10 },
+      paper_bgcolor: "white", dragmode: false, autosize: true,
+      font: { family: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif", color: DARK_TEXT, size: 12 },
+      legend: { orientation: "h", y: -0.02, x: 0.5, xanchor: "center", yanchor: "top" },
+    },
+  };
+}
+
+export type ChartKind = "numeric" | "likert" | "binary" | "pie" | "columns";
+
+export function chartKind(q: Question, dist?: SegmentDist): ChartKind {
   if (q.type === "numeric") return "numeric";
   if (isLikert(q)) return "likert";
-  return validOptions(q).length === 2 ? "binary" : "columns";
+  const n = validOptions(q).length;
+  if (n === 2) return "binary";
+  if (n >= 3 && n <= PIE_MAX_OPTIONS && isSingleChoice(q, dist)) return "pie";
+  return "columns";
+}
+
+/** Approximate chart height, so the lazy placeholder reserves the right space. */
+export function chartHeight(q: Question, dist: SegmentDist | undefined, nSegs: number): number {
+  const kind = chartKind(q, dist);
+  if (kind === "pie") {
+    const nrows = Math.ceil((nSegs + 1) / Math.min(4, nSegs + 1));
+    return 60 + 230 * nrows + 20 * Math.ceil(validOptions(q).length / 2);
+  }
+  return 340;
 }
 
 export function questionChart(
   q: Question, dists: Record<string, SegmentDist>, nums: Record<string, NumSummary>, names: Names,
 ): PlotSpec {
-  const kind = chartKind(q);
-  if (kind === "numeric") return numericQuestionChart(q, nums[q.code], names);
   const d = dists[q.code];
-  return { likert: likertQuestionChart, binary: binaryQuestionChart, columns: columnsQuestionChart }[kind](q, d, names);
+  const kind = chartKind(q, d);
+  if (kind === "numeric") return numericQuestionChart(q, nums[q.code], names);
+  return { likert: likertQuestionChart, binary: binaryQuestionChart, pie: pieQuestionChart, columns: columnsQuestionChart }[kind](q, d, names);
 }
 
 // ---------------------------------------------------------------------------
@@ -498,4 +654,4 @@ export function countyMap(counts: { county: string; n: number; pct: number }[]):
   };
 }
 
-export { SEGMENT_IDS };
+export { SEGMENT_IDS } from "./theme";

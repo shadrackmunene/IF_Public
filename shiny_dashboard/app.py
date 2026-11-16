@@ -1,11 +1,15 @@
 """Youth Livelihoods dashboard (Python Shiny).
 
-Four pages:
-  OVERVIEW          - headline figures for all respondents, segment sizes and where respondents live.
-  SEGMENT PROFILES  - pick a segment and see its profile, where it sits on the livelihood pathway, how many
-                      young people it represents and where it is most prevalent.
-  DEEP DIVES        - compare how the six segments answered survey questions, by dimension and section.
-  SELF ASSESSMENT   - answer 12 short questions and find out which segment you most resemble.
+Six pages:
+  OVERVIEW           - why the study was done, what was done, how to use the dashboard, the six segments in one
+                       picture and a few headline figures.
+  SEGMENTS OVERVIEW  - one card per segment (illustration, traits, size, key figures); click a card for the
+                       segment's story, pathway and opportunity areas.
+  SEGMENTS DATA      - "All segments" compares the six side by side; pick one segment to see its drivers and
+                       pathway against all young people surveyed, in one scroll.
+  DEEP DIVES         - every survey question by segment, by dimension and section.
+  SELF ASSESSMENT    - answer 12 short questions and find out which segment you most resemble.
+  METHODOLOGY        - study design, sample, segmentation and sizing method, definitions, caveats.
 
 Run with:  shiny run --reload shiny_dashboard/app.py
 """
@@ -13,13 +17,19 @@ Run with:  shiny run --reload shiny_dashboard/app.py
 from __future__ import annotations
 
 import sys
+from html import escape
 from pathlib import Path
+from urllib.parse import quote
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
+import hashlib
+
 from shiny import App, reactive, render, ui
 
+import compare
 import data
+import methodology
 import overview_cards
 import plots
 
@@ -35,10 +45,10 @@ if not _plotly_js.exists():
         _PLOTLY_SCRIPT = {"src": "https://cdn.jsdelivr.net/npm/plotly.js-dist-min@3.0.1/plotly.min.js"}
 import questionnaire
 from pathway_content import SEGMENT_CONTENT
-from theme import SEGMENT_NAMES, SEGMENT_PILL_COLORS
+from segment_content import ORDER, PATHWAY_STAGE_KEYS, SEGMENTS, STUDY
+from theme import SEGMENT_COLORS, SEGMENT_NAMES, SEGMENT_PALETTES, SEGMENT_PILL_COLORS, r0
 
-SEGMENTS = data.SEGMENTS
-NAMES = data.segment_names() or SEGMENT_NAMES
+NAMES = SEGMENT_NAMES
 OVERVIEW = data.overview_stats()
 SIZES = data.segment_sizes()
 DRIVER_TABLE = data.segment_driver_table()
@@ -50,68 +60,151 @@ AGE_MIN, AGE_MAX = 18, 30
 AGE_MESSAGE = (f"This tool is meant for young people aged {AGE_MIN} to {AGE_MAX}. "
                f"Please enter an age between {AGE_MIN} and {AGE_MAX}.")
 
+TAB_OVERVIEW, TAB_SEGMENTS, TAB_DATA = "OVERVIEW", "SEGMENTS OVERVIEW", "SEGMENTS DATA"
+TAB_DEEP, TAB_SELF, TAB_METHOD = "DEEP DIVES", "SELF ASSESSMENT", "METHODOLOGY"
+
+
+def image_url(segment: str) -> str:
+    """URL of a segment illustration, with a content hash so browsers fetch the new file when it is replaced."""
+    name = SEGMENTS[segment]["image"]
+    try:
+        version = hashlib.md5((Path(__file__).parent / "www" / name).read_bytes()).hexdigest()[:8]
+    except OSError:
+        return quote(name)
+    return f"{quote(name)}?v={version}"
+
 
 def _segment_pill(segment: str) -> ui.Tag:
     return ui.span(NAMES.get(segment, segment), class_="segment-pill",
                    style=f"background-color:{SEGMENT_PILL_COLORS[segment]}")
 
 
+def _seg_label(segment: str, suffix: str = "") -> ui.Tag:
+    return ui.span(ui.span(class_="dot", style=f"background:{SEGMENT_COLORS[segment]}"), NAMES[segment] + suffix)
+
+
+def _chart_card(title: str, fig, subtitle: str | None = None) -> ui.Tag:
+    return ui.div(ui.h6(title), ui.p(subtitle, class_="card-sub") if subtitle else None,
+                  ui.HTML(plots.to_html(fig)), class_="result-card chart-card")
+
+
 # ---------------------------------------------------------------------------
-# UI
+# OVERVIEW
 # ---------------------------------------------------------------------------
+_HOW_TO = [
+    (TAB_SEGMENTS, "Meet the six segments: who they are, what drives them, and what could help them."),
+    (TAB_DATA, "Compare the segments side by side, or look at one segment's data in detail."),
+    (TAB_DEEP, "Explore every survey question by segment."),
+    (TAB_SELF, "Answer 12 questions to see which segment you are most like."),
+    (TAB_METHOD, "How the study was done, definitions and caveats."),
+]
+
 overview_panel = ui.nav_panel(
-    "OVERVIEW",
-    ui.h2("Real Livelihoods Youth Segmentation Study"),
-    ui.p(
-        f"Descriptive findings across all {OVERVIEW['n_respondents']:,} respondents (Kenyan youth, 9 counties). "
-        "Six youth segments were identified from their demographics, behaviours and mindsets - "
-        "see the Segment Profiles tab."
+    TAB_OVERVIEW,
+    ui.div(
+        ui.div("Imaginable Futures · Youth livelihood segmentation and pathways", class_="eyebrow"),
+        ui.h1("Real Livelihoods of Kenyan Youth"),
+        ui.p(STUDY["what"], class_="lead"),
+        class_="hero",
     ),
-    *[ui.div(ui.h4(g["title"]), ui.HTML(overview_cards.cards_html(g["cards"], g["palette"])))
+    ui.h4("Why this study"),
+    ui.div(*[ui.div(ui.h6(t), ui.p(d), class_="why-card") for t, d in STUDY["why"]], class_="why-grid"),
+    ui.h4("Six segments of Kenyan youth"),
+    ui.row(
+        ui.column(5, ui.div(ui.h6("Estimated share of young people aged 16 to 30"),
+                            ui.output_ui("overview_donut"), class_="result-card chart-card")),
+        ui.column(7, ui.div(
+            *[ui.div(
+                ui.img(src=image_url(s), alt="", class_="mini-img"),
+                ui.div(ui.div(NAMES[s], class_="mini-name", style=f"color:{SEGMENT_PALETTES[s][0]}"),
+                       ui.div(SEGMENTS[s]["tagline"], class_="mini-tag")),
+                ui.div(SEGMENTS[s]["stats"]["population"], class_="mini-pop"),
+                class_="mini-row seg-link", **{"data-seg": s, "role": "button", "tabindex": "0"},
+            ) for s in ORDER],
+            class_="mini-list",
+        )),
+    ),
+    ui.h4("How to use this dashboard"),
+    ui.div(*[ui.div(ui.tags.button(t.title(), class_="btn btn-outline-primary nav-jump", **{"data-tab": t}),
+                    ui.span(d), class_="howto-row") for t, d in _HOW_TO], class_="howto"),
+    ui.h4("The young people surveyed at a glance"),
+    *[ui.div(ui.h6(g["title"], class_="group-title"), ui.HTML(overview_cards.cards_html(g["cards"], g["palette"])))
       for g in overview_cards.groups(OVERVIEW)],
-    ui.h4("Six segments at a glance"),
-    ui.output_ui("overview_segment_sizes"),
-    ui.output_ui("overview_county_map"),
+    ui.p(f"Figures describe the {OVERVIEW['n_respondents']:,} young people surveyed in nine counties and are not "
+         "weighted to the national population. See Methodology.", class_="footnote"),
 )
 
-segment_profiles_panel = ui.nav_panel(
-    "SEGMENT PROFILES",
+# ---------------------------------------------------------------------------
+# SEGMENTS OVERVIEW
+# ---------------------------------------------------------------------------
+def _segment_card(s: str) -> ui.Tag:
+    c, st = SEGMENTS[s], SEGMENTS[s]["stats"]
+    dark, mid, _, light = SEGMENT_PALETTES[s]
+    return ui.div(
+        ui.div(ui.img(src=image_url(s), alt=f"{NAMES[s]} illustration"), class_="seg-card-img",
+               style=f"background:{light}"),
+        ui.div(
+            ui.div(f"Segment {c['number']}", class_="seg-num", style=f"color:{dark}"),
+            ui.h5(NAMES[s], style=f"color:{dark}"),
+            ui.div(*[ui.span(t, class_="trait", style=f"background:{light};color:{dark}") for t in c["traits"]],
+                   class_="traits"),
+            ui.p(c["tagline"], class_="seg-tagline"),
+            ui.div(
+                ui.div(ui.tags.b(st["population"]), ui.span(f"young people ({st['share']})"), class_="kv"),
+                ui.div(ui.tags.b(st["median_age"]), ui.span("median age"), class_="kv"),
+                ui.div(ui.tags.b(st["women"]), ui.span("women"), class_="kv"),
+                ui.div(ui.tags.b(st["median_income"]), ui.span("median monthly income"), class_="kv"),
+                class_="kv-grid",
+            ),
+            ui.div("Read their story →", class_="seg-more", style=f"color:{dark}"),
+            class_="seg-card-body",
+        ),
+        class_="seg-card" + (" selected" if s == ORDER[0] else ""),
+        style=f"--seg:{mid}",
+        **{"data-seg": s, "role": "button", "tabindex": "0", "aria-label": f"Show {NAMES[s]}"},
+    )
+
+
+segments_panel = ui.nav_panel(
+    TAB_SEGMENTS,
+    ui.h2("Six segments of Kenyan youth"),
+    ui.p("Each segment is a group of young people who share circumstances, behaviours and mindsets. They are numbered "
+         "as in the study report, broadly from those who most need help to establish a livelihood to those who most "
+         "need help to progress. Click a segment to read its story, its pathway and what could help.", class_="lead-sm"),
+    ui.div(*[_segment_card(s) for s in ORDER], class_="seg-grid"),
+    ui.div(ui.output_ui("segment_detail"), id="segment-detail"),
+)
+
+# ---------------------------------------------------------------------------
+# SEGMENTS DATA
+# ---------------------------------------------------------------------------
+segment_data_panel = ui.nav_panel(
+    TAB_DATA,
     ui.row(
         ui.column(
             3,
             ui.div(
-                ui.h4("Choose a segment"),
+                ui.h4("Show"),
                 ui.div(
                     ui.input_radio_buttons(
-                        "profile_segment", None,
-                        {s: f"{NAMES[s]} ({SIZES.loc[SIZES.segment == s, 'pct'].iloc[0]}%)" for s in SEGMENTS},
-                        selected="1",
+                        "data_seg", None,
+                        {"all": ui.span(ui.span(class_="dot all"), ui.tags.b("All segments (compare)")),
+                         **{s: _seg_label(s) for s in ORDER}},
+                        selected="all",
                     ),
                     class_="seg-choice",
                 ),
+                ui.p("▲ / ▼ mark where a segment is the highest / lowest of the six.", class_="text-muted small"),
                 class_="sticky-side result-card",
             ),
         ),
-        ui.column(
-            9,
-            ui.output_ui("segment_profile_header"),
-            ui.div(
-                ui.navset_tab(
-                    ui.nav_panel("Demographic", ui.output_ui("profile_demographic_chart")),
-                    ui.nav_panel("Behavioural", ui.output_ui("profile_behavioral_chart")),
-                    ui.nav_panel("Psychographic", ui.output_ui("profile_psychographic_chart")),
-                    ui.nav_panel(
-                        "Livelihood pathway",
-                        ui.output_ui("profile_pathway_chart"),
-                        ui.output_ui("profile_pathway_text"),
-                    ),
-                ),
-                class_="profile-tabs",
-            ),
-        ),
+        ui.column(9, ui.output_ui("data_view")),
     ),
 )
 
+# ---------------------------------------------------------------------------
+# SELF ASSESSMENT
+# ---------------------------------------------------------------------------
 _question_steps = []
 _N_Q = len(questionnaire.QUESTIONS)
 for _i, q in enumerate(questionnaire.QUESTIONS):
@@ -152,11 +245,11 @@ _wizard = ui.div(
 )
 
 self_assessment_panel = ui.nav_panel(
-    "SELF ASSESSMENT",
+    TAB_SELF,
     ui.row(
         ui.column(
             6,
-            ui.h2("Instructions to self assessment"),
+            ui.h2("Which segment are you most like?"),
             ui.tags.ol(
                 ui.tags.li(f"This tool is for young people aged {AGE_MIN} to {AGE_MAX}."),
                 ui.tags.li(f"You will answer {_N_Q} short questions, one at a time. "
@@ -175,10 +268,13 @@ self_assessment_panel = ui.nav_panel(
     ),
 )
 
+# ---------------------------------------------------------------------------
+# DEEP DIVES
+# ---------------------------------------------------------------------------
 _DIMS = [d for d in data.DIMENSION_ORDER if data.sections_for(d)]
 
 deep_dives_panel = ui.nav_panel(
-    "DEEP DIVES",
+    TAB_DEEP,
     ui.row(
         ui.column(
             3,
@@ -192,9 +288,10 @@ deep_dives_panel = ui.nav_panel(
                     {"all": "All questions", "likert": "Rating scales (Likert)", "other": "Choices & other"}),
                 ui.div(
                     ui.input_radio_buttons(
-                        "ex_seg", "Segment", {"all": "All segments", **{s: NAMES[s] for s in SEGMENTS}},
+                        "ex_seg", "Segment",
+                        {"all": ui.span(ui.span(class_="dot all"), "All segments"), **{s: _seg_label(s) for s in ORDER}},
                         selected="all"),
-                    class_="seg-choice seg-choice-all",
+                    class_="seg-choice",
                 ),
                 class_="sticky-side result-card",
             ),
@@ -203,6 +300,47 @@ deep_dives_panel = ui.nav_panel(
     ),
 ) if data.has_question_data() and _DIMS else None
 
+# ---------------------------------------------------------------------------
+# METHODOLOGY
+# ---------------------------------------------------------------------------
+def _method_sections() -> list[ui.Tag]:
+    out = []
+    for sec in methodology.SECTIONS:
+        out.append(ui.div(
+            ui.h4(sec["title"]),
+            *[ui.p(p) for p in sec.get("paras", [])],
+            ui.tags.ul(*[ui.tags.li(b) for b in sec.get("bullets", [])]) if sec.get("bullets") else None,
+            class_="method-section",
+        ))
+    rows = "".join(f"<tr><td>{escape(c)}</td><th scope='row'>{escape(n)}</th><td>{escape(d)}</td><td>{escape(t)}</td></tr>"
+                   for c, n, d, t in methodology.DRIVER_DEFINITIONS)
+    out.append(ui.div(
+        ui.h4("Driver definitions"),
+        ui.HTML('<div class="table-scroll"><table class="cmp-table defs"><thead><tr><th>Group</th><th>Driver</th>'
+                f"<th>Definition</th><th>Measure</th></tr></thead><tbody>{rows}</tbody></table></div>"),
+        ui.p("Direct: the survey question matches the HCD definition. Proxy: the closest available question.",
+             class_="footnote"),
+        class_="method-section",
+    ))
+    return out
+
+
+method_panel = ui.nav_panel(
+    TAB_METHOD,
+    ui.h2("Methodology and technical notes"),
+    ui.p("How the study was designed, how the segments and size estimates were produced, and how to read the "
+         "figures on this dashboard.", class_="lead-sm"),
+    *_method_sections(),
+    ui.h4("Survey sample"),
+    ui.row(
+        ui.column(6, ui.output_ui("method_sample_chart")),
+        ui.column(6, ui.output_ui("method_county_map")),
+    ),
+)
+
+# ---------------------------------------------------------------------------
+# Page
+# ---------------------------------------------------------------------------
 _wizard_js = """
 (function () {
   var cur = 0, shownAt = 0;
@@ -297,6 +435,40 @@ _wizard_js = """
 })();
 """ % {"age_min": AGE_MIN, "age_max": AGE_MAX}
 
+# Segment cards / links and "jump to tab" buttons: tell the server which segment or tab was chosen.
+_nav_js = """
+(function () {
+  function pickCard(seg) {
+    document.querySelectorAll(".seg-card").forEach(function (c) { c.classList.toggle("selected", c.dataset.seg === seg); });
+  }
+  function act(el) {
+    if (!window.Shiny || !Shiny.setInputValue) return;
+    if (el.classList.contains("seg-card")) {
+      pickCard(el.dataset.seg);
+      Shiny.setInputValue("card_seg", el.dataset.seg, {priority: "event"});
+      var d = document.getElementById("segment-detail");
+      if (d) setTimeout(function () { d.scrollIntoView({behavior: "smooth", block: "start"}); }, 150);
+    } else if (el.classList.contains("seg-link")) {
+      pickCard(el.dataset.seg);
+      Shiny.setInputValue("goto_segment", el.dataset.seg, {priority: "event"});
+    } else if (el.classList.contains("nav-jump")) {
+      Shiny.setInputValue("goto_tab", el.dataset.tab, {priority: "event"});
+    } else if (el.classList.contains("data-jump")) {
+      Shiny.setInputValue("goto_data", el.dataset.seg, {priority: "event"});
+    }
+  }
+  document.addEventListener("click", function (e) {
+    var el = e.target.closest(".seg-card, .seg-link, .nav-jump, .data-jump");
+    if (el) act(el);
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key !== "Enter" && e.key !== " ") return;
+    var el = e.target.closest && e.target.closest(".seg-card, .seg-link");
+    if (el) { e.preventDefault(); act(el); }
+  });
+})();
+"""
+
 _processing_overlay = ui.div(
     ui.div(class_="spinner-border text-primary", role="status"),
     ui.div("Analysing your answers…", class_="processing-text"),
@@ -305,14 +477,18 @@ _processing_overlay = ui.div(
 
 app_ui = ui.page_navbar(
     overview_panel,
-    segment_profiles_panel,
+    segments_panel,
+    segment_data_panel,
     *([deep_dives_panel] if deep_dives_panel is not None else []),
     self_assessment_panel,
+    method_panel,
+    id="main_nav",
     title="YOUTH LIVELIHOODS",
     header=ui.TagList(
         ui.include_css(Path(__file__).parent / "www" / "styles.css"),
         ui.tags.script(**_PLOTLY_SCRIPT),
         ui.tags.script(_wizard_js),
+        ui.tags.script(_nav_js),
         _processing_overlay,
     ),
     fillable=False,
@@ -320,90 +496,207 @@ app_ui = ui.page_navbar(
 
 
 # ---------------------------------------------------------------------------
-# Server
+# Shared segment blocks
 # ---------------------------------------------------------------------------
+def _stat_chips(s: str) -> ui.Tag:
+    st = SEGMENTS[s]["stats"]
+    items = [(st["population"], f"young people in Kenya ({st['share']})"), (st["median_age"], "median age"),
+             (st["women"], "women"), (st["rural"], "live in rural areas"),
+             (st["median_income"], "median monthly income")]
+    return ui.div(*[ui.div(ui.tags.b(v), ui.span(l), class_="chip-stat") for v, l in items], class_="chip-stats")
+
+
+def _segment_header(s: str, compact: bool = False) -> ui.Tag:
+    c = SEGMENTS[s]
+    dark, _, _, light = SEGMENT_PALETTES[s]
+    return ui.div(
+        ui.img(src=image_url(s), alt="", class_="hdr-img"),
+        ui.div(
+            ui.div(f"Segment {c['number']}", class_="seg-num", style=f"color:{dark}"),
+            ui.h3(NAMES[s], style=f"color:{dark}"),
+            ui.div(*[ui.span(t, class_="trait", style=f"background:{light};color:{dark}") for t in c["traits"]],
+                   class_="traits"),
+            ui.p(c["insight"], class_="insight"),
+            _stat_chips(s) if not compact else None,
+        ),
+        class_="seg-header",
+        style=f"border-left:6px solid {dark}",
+    )
+
+
+def _pathway_block(s: str) -> ui.Tag:
+    c = SEGMENTS[s]
+    steps = [ui.div(ui.div(label, class_="stage-name"), ui.div(c["aspirations"][k], class_="stage-asp"),
+                    class_="stage")
+             for k, label in PATHWAY_STAGE_KEYS if k in c["aspirations"]]
+    return ui.div(ui.p(c["pathway_summary"]), ui.div(*steps, class_="stages"))
+
+
+def _opportunities_block(s: str) -> ui.Tag:
+    themes: dict[str, list] = {}
+    for theme, title, desc in SEGMENTS[s]["opportunities"]:
+        themes.setdefault(theme, []).append((title, desc))
+    return ui.div(*[ui.div(ui.div(theme, class_="opp-theme"),
+                           *[ui.div(ui.tags.b(t), ui.p(d), class_="opp") for t, d in items], class_="opp-col")
+                    for theme, items in themes.items()], class_="opp-grid")
+
+
+def _technical_footnote(s: str) -> ui.Tag:
+    size = SIZES[SIZES.segment == s].iloc[0]
+    lines = [f"Survey: {int(size['n'])} of the {N_BY_SEGMENT['All']:,} young people surveyed "
+             f"({r0(size['pct'])}%) are in this segment."]
+    pop = data.population_estimate(s)
+    if pop:
+        lines.append(f"National estimate: about {pop['n'] / 1e6:.1f} million young people ({r0(pop['pct'])}% of "
+                     f"about {pop['total'] / 1e6:.1f} million aged 16-30), "
+                     "a directional, census-based model estimate, not a headcount.")
+    where = data.county_summary(s)
+    if where:
+        lines.append(where.replace("Most prevalent in", "Among the counties surveyed, most common in"))
+    return ui.div(ui.h6("Technical notes"), *[ui.p(l) for l in lines], class_="footnote-box")
+
+
 def _card(title: str, html: str, **style) -> ui.Tag:
     return ui.div(ui.h6(title), ui.HTML(html), class_="result-card", style="margin-bottom:14px;padding:1rem")
 
 
+# ---------------------------------------------------------------------------
+# Server
+# ---------------------------------------------------------------------------
 def server(input, output, session):
 
+    # ---- Navigation between tabs -------------------------------------------
+    card_seg = reactive.value(ORDER[0])
+
+    @reactive.effect
+    @reactive.event(input.card_seg)
+    def _pick_card():
+        card_seg.set(input.card_seg())
+
+    @reactive.effect
+    @reactive.event(input.goto_segment)
+    def _goto_segment():
+        card_seg.set(input.goto_segment())
+        ui.update_navset("main_nav", selected=TAB_SEGMENTS)
+
+    @reactive.effect
+    @reactive.event(input.goto_tab)
+    def _goto_tab():
+        ui.update_navset("main_nav", selected=input.goto_tab())
+
+    @reactive.effect
+    @reactive.event(input.goto_data)
+    def _goto_data():
+        ui.update_radio_buttons("data_seg", selected=input.goto_data())
+        ui.update_navset("main_nav", selected=TAB_DATA)
+
+    # ---- Overview ----------------------------------------------------------
     @render.ui
-    def overview_segment_sizes():
-        return ui.HTML(plots.to_html(plots.segment_size_chart(SIZES)))
+    def overview_donut():
+        return ui.HTML(plots.to_html(plots.segment_share_donut(data.population(), SIZES)))
+
+    # ---- Segments overview -------------------------------------------------
+    @render.ui
+    def segment_detail():
+        s = card_seg.get()
+        c = SEGMENTS[s]
+        dark = SEGMENT_PALETTES[s][0]
+        return ui.div(
+            _segment_header(s),
+            ui.row(
+                ui.column(7,
+                          ui.h5("Who they are"), *[ui.p(p) for p in c["narrative"]],
+                          ui.tags.blockquote(f"“{c['quote']}”", class_="quote", style=f"border-color:{dark}")),
+                ui.column(5,
+                          ui.div(ui.h6("What helps them"), ui.tags.ul(*[ui.tags.li(e) for e in c["enablers"]]),
+                                 class_="eb enablers"),
+                          ui.div(ui.h6("What holds them back"), ui.tags.ul(*[ui.tags.li(b) for b in c["barriers"]]),
+                                 class_="eb barriers")),
+            ),
+            ui.h5("Their livelihood pathway"),
+            _pathway_block(s),
+            ui.h5("Opportunity areas"),
+            ui.p("Where programmes and partners could make the most difference for this segment.", class_="text-muted"),
+            _opportunities_block(s),
+            ui.div(ui.tags.button(f"See the data for {NAMES[s]} →", class_="btn btn-primary data-jump",
+                                  **{"data-seg": s}), class_="detail-actions"),
+            class_="segment-detail result-card",
+        )
+
+    # ---- Segments data -----------------------------------------------------
+    def _all_view() -> ui.Tag:
+        return ui.div(
+            ui.h3("All segments compared"),
+            ui.p("The segments differ most in how they learned their skills, how they find work and what work means "
+                 "to them. Survival Workers and Stability Seekers rely almost entirely on family and friends for work; "
+                 "Career Pursuers find work through applications and professional contacts; Skill Investors are the "
+                 "only group for whom work is mainly part of who they are rather than a means to an end.", class_="insight"),
+            ui.h5("At a glance"),
+            ui.HTML(compare.segment_compare_html(image_url)),
+            ui.h5("Livelihood pathway"),
+            _chart_card("Share of each segment that has reached each stage of the pathway",
+                        plots.pathway_compare_chart(STAGE_TABLE, N_BY_SEGMENT),
+                        "The grey line shows all young people surveyed. Stage definitions are on the Methodology tab."),
+            ui.h5("Segmentation drivers across the six segments"),
+            ui.p("Darker cells are higher values within each row. ▲ marks the highest segment, ▼ the lowest.",
+                 class_="text-muted"),
+            ui.HTML(compare.driver_heatmap_html(DRIVER_TABLE)),
+            ui.p("Estimates of national size are directional, census-based model estimates; all other figures "
+                 "describe the young people surveyed and are not weighted. See Methodology.", class_="footnote"),
+        )
+
+    def _segment_view(s: str) -> ui.Tag:
+        cards = []
+        for cat, title in (("Demographic", "Demographic"), ("Behavioral", "Behavioural"),
+                           ("Psychographic", "Psychometric")):
+            for kind, sub in (("pct", "share of the segment"), ("score", "averages")):
+                fig = plots.driver_bar_chart(DRIVER_TABLE, cat, s, kind, N_BY_SEGMENT)
+                if fig is not None:
+                    cards.append(_chart_card(f"{title}: {sub}", fig))
+        pathway_card = ui.div(
+            ui.h6("Livelihood pathway: share who have reached each stage"),
+            ui.HTML(plots.to_html(plots.pathway_stage_chart(STAGE_TABLE, s, N_BY_SEGMENT))),
+            ui.p(SEGMENTS[s]["pathway_summary"], class_="small"),
+            class_="result-card chart-card wide",
+        )
+        survey = SEGMENT_CONTENT[s]
+        return ui.div(
+            _segment_header(s),
+            ui.h5("What sets them apart in the data"),
+            ui.HTML(compare.defining_drivers_html(DRIVER_TABLE, s)),
+            ui.div(*cards, pathway_card, class_="chart-grid"),
+            ui.div(
+                ui.h5("What the survey says about their next step"),
+                ui.tags.ul(*[ui.tags.li(b) for b in survey["what_would_help"]], class_="pathway-bullet-list"),
+                class_="result-card",
+            ),
+            _technical_footnote(s),
+        )
 
     @render.ui
-    def overview_county_map():
+    def data_view():
+        s = input.data_seg()
+        return _all_view() if s == "all" else _segment_view(s)
+
+    # ---- Methodology -------------------------------------------------------
+    @render.ui
+    def method_sample_chart():
+        return _chart_card("Young people surveyed, by segment", plots.segment_size_chart(SIZES))
+
+    @render.ui
+    def method_county_map():
         counts = data.county_counts()
         if counts.empty:
             return ui.div()
         missed = plots.unmatched_counties(counts)
         return ui.div(
-            ui.h4("Where respondents are"),
-            ui.p("Bubble size shows the number of respondents in each county.", class_="text-muted"),
+            ui.h6("Where the young people surveyed live"),
+            ui.p("Bubble size shows the number of young people surveyed in each county.", class_="card-sub"),
             ui.HTML(plots.to_html(plots.county_map(counts))),
-            ui.p(f"Counties with fewer than {data.MIN_COUNTY_N} respondents are excluded from the map.",
-                 class_="text-muted"),
-            ui.p("Not shown on the map (name not recognised): " + ", ".join(missed), class_="text-muted")
-            if missed else ui.div(),
-        )
-
-    # ---- Segment Profiles --------------------------------------------------
-    @render.ui
-    def segment_profile_header():
-        seg = input.profile_segment()
-        content = SEGMENT_CONTENT[seg]
-        size_row = SIZES[SIZES.segment == seg].iloc[0]
-        lines = [ui.p(ui.strong(content["headline"]))]
-        pop = data.population_estimate(seg)
-        if pop:
-            lines.append(ui.p(f"Estimated {pop['n']:,} young people nationwide ({pop['pct']}% of {pop['total']:,}). "
-                              "Directional sizing only: these are approximate values, modelled from census "
-                              "records and predicted segments, not a headcount.", class_="text-muted",
-                              title=pop["note"]))
-        where = data.county_summary(seg)
-        if where:
-            lines.append(ui.p(where, class_="text-muted"))
-        return ui.div(
-            ui.h3(_segment_pill(seg), f"  {size_row['pct']}% of respondents (n={size_row['n']})"),
-            *lines,
-        )
-
-    def _driver_block(category: str):
-        seg = input.profile_segment()
-        blocks = []
-        for kind, title in (("pct", "Share of the segment"), ("score", "Average scores")):
-            fig = plots.driver_bar_chart(DRIVER_TABLE, category, seg, kind, N_BY_SEGMENT)
-            if fig is not None:
-                blocks.append(_card(title, plots.to_html(fig)))
-        return ui.div(*blocks)
-
-    @render.ui
-    def profile_demographic_chart():
-        return _driver_block("Demographic")
-
-    @render.ui
-    def profile_behavioral_chart():
-        return _driver_block("Behavioral")
-
-    @render.ui
-    def profile_psychographic_chart():
-        return _driver_block("Psychographic")
-
-    @render.ui
-    def profile_pathway_chart():
-        seg = input.profile_segment()
-        return ui.HTML(plots.to_html(plots.pathway_stage_chart(STAGE_TABLE, seg, N_BY_SEGMENT.get(seg))))
-
-    @render.ui
-    def profile_pathway_text():
-        content = SEGMENT_CONTENT[input.profile_segment()]
-        return ui.div(
-            ui.h5("Where they sit"),
-            ui.tags.ul(*[ui.tags.li(b) for b in content["where_they_sit"]], class_="pathway-bullet-list"),
-            ui.h5("What the survey says would help them move on"),
-            ui.tags.ul(*[ui.tags.li(b) for b in content["what_would_help"]], class_="pathway-bullet-list"),
-            ui.p(ui.em(content["hcd_link"]), class_="text-muted"),
+            ui.p(f"Counties with fewer than {data.MIN_COUNTY_N} respondents are not shown.", class_="footnote"),
+            ui.p("Not shown on the map (name not recognised): " + ", ".join(missed), class_="footnote")
+            if missed else None,
+            class_="result-card chart-card",
         )
 
     # ---- Deep dives --------------------------------------------------------
@@ -497,18 +790,23 @@ def server(input, output, session):
     def _show_results_modal():
         result = assessment_result()
         seg = result["segment"]
-        content = SEGMENT_CONTENT[seg]
         ui.modal_show(
             ui.modal(
-                ui.h3("You match ", _segment_pill(seg)),
-                ui.p(ui.strong(content["headline"])),
+                _segment_header(seg, compact=True),
+                ui.h5("How closely you match each segment"),
                 ui.output_ui("assessment_probability_chart"),
-                ui.h5("Where you likely sit"),
-                ui.tags.ul(*[ui.tags.li(b) for b in content["where_they_sit"]], class_="pathway-bullet-list"),
-                ui.h5("Your growth pathway - what would help you move on"),
-                ui.tags.ul(*[ui.tags.li(b) for b in content["what_would_help"]], class_="pathway-bullet-list"),
+                ui.h5("The pathway for young people like you"),
+                _pathway_block(seg),
+                ui.h5("What could help you move forward"),
+                ui.tags.ul(*[ui.tags.li(ui.tags.b(t), f": {d}") for _, t, d in SEGMENTS[seg]["opportunities"][:5]],
+                           class_="pathway-bullet-list"),
                 ui.output_ui("assessment_pathway_chart"),
-                title="Your segment",
+                # Title row with a top-right close (x) button, as on the Next.js dashboard.
+                title=ui.TagList(
+                    ui.span("Your segment"),
+                    ui.tags.button("×", type="button", class_="modal-x", data_bs_dismiss="modal",
+                                   aria_label="Close"),
+                ),
                 size="l",
                 easy_close=True,
                 footer=ui.modal_button("Close"),
@@ -537,7 +835,7 @@ def server(input, output, session):
     @render.ui
     def assessment_pathway_chart():
         seg = assessment_result()["segment"]
-        return ui.HTML(plots.to_html(plots.pathway_stage_chart(STAGE_TABLE, seg, N_BY_SEGMENT.get(seg))))
+        return ui.HTML(plots.to_html(plots.pathway_stage_chart(STAGE_TABLE, seg, N_BY_SEGMENT)))
 
 
 app = App(app_ui, server, static_assets=Path(__file__).parent / "www")

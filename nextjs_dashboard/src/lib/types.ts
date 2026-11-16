@@ -46,7 +46,37 @@ export interface AssessmentQuestion {
   options?: { label: string; value: string | number }[];
 }
 
+/** Report-based segment content (shiny_dashboard/segment_content.py). */
+export interface Profile {
+  number: number;
+  image: string;
+  slug: string;
+  traits: string[];
+  tagline: string;
+  insight: string;
+  narrative: string[];
+  quote: string;
+  enablers: string[];
+  barriers: string[];
+  stats: Record<"share" | "population" | "rural" | "median_age" | "women" | "median_income", string>;
+  compare: Record<"education" | "found_work" | "work_meaning" | "stands_out", string>;
+  pathway_summary: string;
+  aspirations: Record<string, string>;
+  opportunities: { theme: string; title: string; desc: string }[];
+}
+
+export interface MethodSection {
+  title: string;
+  paras?: string[];
+  bullets?: string[];
+}
+
 export interface Dashboard {
+  profiles: Record<string, Profile>;
+  compare_rows: [string, string][];
+  stage_keys: [string, string][];
+  study: { why: [string, string][]; what: string };
+  methodology: { sections: MethodSection[]; drivers: [string, string, string, string][] };
   content: Record<string, SegmentContent>;
   stage_order: string[];
   questionnaire: AssessmentQuestion[];

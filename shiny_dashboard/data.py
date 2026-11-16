@@ -143,6 +143,11 @@ def county_summary(segment: str, top: int = 3) -> str | None:
 MIN_COUNTY_N = 10  # must match scripts/aggregate_for_dashboard.py: smaller counties are dropped from county_counts.json
 
 
+def population() -> dict | None:
+    """The national sizing file (segment_population.json), or None if it is not supplied."""
+    return _population
+
+
 def population_estimate(segment: str) -> dict | None:
     """National estimate for a segment, if a six-segment sizing file has been supplied."""
     if not _population:

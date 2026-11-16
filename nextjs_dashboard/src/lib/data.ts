@@ -8,6 +8,8 @@ export const INDIVIDUAL = "Individual questions";
 export const MIN_COUNTY_N = 10; // must match scripts/aggregate_for_dashboard.py
 
 export const dataUrl = (file: string) => `${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/data/${file}`;
+/** URL of a file in public/ (e.g. "images/segments/survival-workers.png"), honouring the base path. */
+export const assetUrl = (path: string) => `${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/${path}`;
 
 export const dimensions = (d: Dashboard) =>
   DIMENSION_ORDER.filter((dim) => d.catalog.some((q) => q.dimension === dim));

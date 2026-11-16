@@ -6,6 +6,8 @@ self-assessment model, and writes to nextjs_dashboard/public/data/:
   dashboard.json  one compact bundle: overview, sizes, drivers, pathway stages, question catalog (short labels
                   applied, hidden items removed, location/household questions first), per-question answer
                   shares and numeric averages, county counts, county prevalence and national estimates.
+                  Also the written content: segment profiles (segment_content.py) and methodology notes
+                  (methodology.py). The segment illustrations are copied to public/images/segments/.
   model.json      the self-assessment logistic regression as plain numbers (coefficients, intercepts, feature
                   order) so scoring runs in the browser with no server.
 
@@ -15,6 +17,7 @@ Run from the repository root (needs joblib + scikit-learn, as the Shiny app does
 
 from __future__ import annotations
 
+import hashlib
 import json
 import sys
 from pathlib import Path
@@ -79,8 +82,19 @@ def build_bundle() -> dict:
         slim.append(item)
 
     sys.path.insert(0, str(ROOT / "shiny_dashboard"))
+    import methodology
     import questionnaire
+    import segment_content as sc
     from pathway_content import PATHWAY_STAGES, SEGMENT_CONTENT
+
+    profiles = {}
+    for code, c in sc.SEGMENTS.items():
+        item = {k: v for k, v in c.items() if k not in ("image", "opportunities")}
+        # Content hash in the URL so browsers fetch a replaced illustration instead of a cached copy.
+        version = hashlib.md5((ROOT / "shiny_dashboard" / "www" / c["image"]).read_bytes()).hexdigest()[:8]
+        item["image"] = f"images/segments/{c['slug']}.png?v={version}"
+        item["opportunities"] = [{"theme": t, "title": ti, "desc": d} for t, ti, d in c["opportunities"]]
+        profiles[code] = item
 
     content = {s: {k: c[k] for k in ("headline", "where_they_sit", "what_would_help", "hcd_link")}
                for s, c in SEGMENT_CONTENT.items()}
@@ -91,6 +105,12 @@ def build_bundle() -> dict:
                  for q in questionnaire.QUESTIONS]
 
     return {
+        "profiles": profiles,
+        "compare_rows": [list(r) for r in sc.COMPARE_ROWS],
+        "stage_keys": [list(r) for r in sc.PATHWAY_STAGE_KEYS],
+        "study": {"why": [list(r) for r in sc.STUDY["why"]], "what": sc.STUDY["what"]},
+        "methodology": {"sections": methodology.SECTIONS,
+                        "drivers": [list(r) for r in methodology.DRIVER_DEFINITIONS]},
         "content": content,
         "stage_order": PATHWAY_STAGES,
         "questionnaire": questions,
@@ -121,8 +141,23 @@ def build_model() -> dict:
     }
 
 
+def copy_images() -> None:
+    """Copy the segment illustrations from shiny_dashboard/www/ to the Next.js public folder, under URL-safe
+    names (images/segments/<slug>.png)."""
+    import shutil
+
+    sys.path.insert(0, str(ROOT / "shiny_dashboard"))
+    from segment_content import SEGMENTS
+
+    dest = ROOT / "nextjs_dashboard" / "public" / "images" / "segments"
+    dest.mkdir(parents=True, exist_ok=True)
+    for c in SEGMENTS.values():
+        shutil.copyfile(ROOT / "shiny_dashboard" / "www" / c["image"], dest / f"{c['slug']}.png")
+
+
 if __name__ == "__main__":
     OUT.mkdir(parents=True, exist_ok=True)
+    copy_images()
     bundle = build_bundle()
     (OUT / "dashboard.json").write_text(json.dumps(bundle, separators=(",", ":"), ensure_ascii=False), encoding="utf-8")
     (OUT / "model.json").write_text(json.dumps(build_model(), separators=(",", ":")), encoding="utf-8")

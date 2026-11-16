@@ -1,4 +1,5 @@
-"""Authored per-segment pathway narrative content, taken from the study deliverable's "Pathways" section.
+"""Survey-based pathway notes per segment (keyed by analysis segment code - see segment_content.py for the
+code -> name mapping), from the study deliverable's "Pathways" section.
 This is qualitative synthesis (HCD research + analyst interpretation of the survey) that cannot be
 recomputed from the data, so it is reproduced as written rather than regenerated. The stage percentages
 shown in the charts come from the pre-computed files.
@@ -132,7 +133,7 @@ SEGMENT_CONTENT: dict[str, dict] = {
         ),
     },
     "6": {
-        "headline": "Formally networked and earning, but 41% are in a paid job or business despite 55% trained beyond school",
+        "headline": "Find work through applications and professional contacts; most earn, but only 41% are in a paid job or business",
         "hcd_persona": "Purposeful Pivoter",
         "hcd_fit": 73,
         "hcd_runner_up": "Livelihood Sampler",

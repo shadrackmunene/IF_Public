@@ -14,7 +14,7 @@ import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-OUT_DIRS = [ROOT / "shiny_dashboard" / "precomputed", ROOT / "streamlit_dashboard" / "precomputed"]
+OUT_DIRS = [ROOT / "shiny_dashboard" / "precomputed"]
 
 # Items that are not meaningful as a chart (consent script; coded answers with no labels, where an
 # "average" of the codes would mislead).

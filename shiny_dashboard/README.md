@@ -33,4 +33,8 @@ Then open the URL it prints (defaults to `http://127.0.0.1:8000`).
 - `model/mini_questionnaire_model.joblib`: the fitted self-assessment model. Data and model are loaded once at
   start-up, so restart the app after replacing either.
 - `pathway_content.py`: segment narratives and pathway text, reproduced from the study deliverable.
-- `theme.py`, `www/styles.css`: colours matching the deliverable deck.
+- `segment_content.py`: segment names, report order, descriptions, pathways and opportunity areas from the client
+  report (also the analysis-code -> report-number key). `methodology.py`: the Methodology page text.
+- `compare.py`: the segment comparison tables. `theme.py`, `www/styles.css`: colours matching the segment
+  illustrations in `www/`.
+- `.env`: deployment credentials (git-ignored, never commit).

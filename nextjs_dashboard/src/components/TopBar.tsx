@@ -5,9 +5,11 @@ import { usePathname } from "next/navigation";
 
 const TABS = [
   { href: "/", label: "OVERVIEW" },
-  { href: "/profiles/", label: "SEGMENT PROFILES" },
+  { href: "/segments/", label: "SEGMENTS OVERVIEW" },
+  { href: "/profiles/", label: "SEGMENTS DATA" },
   { href: "/deep-dives/", label: "DEEP DIVES" },
   { href: "/self-assessment/", label: "SELF ASSESSMENT" },
+  { href: "/methodology/", label: "METHODOLOGY" },
 ];
 
 export default function TopBar() {

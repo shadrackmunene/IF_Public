@@ -1,14 +1,18 @@
 # Youth Livelihoods dashboard (Next.js)
 
-The same four pages as the Shiny and Streamlit dashboards, built as a **static site**: no Python server runs when
-someone opens it, so it loads fast, never "sleeps", and can be hosted free.
+The same six pages as the Shiny dashboard, built as a **static site**: no Python server runs when someone opens
+it, so it loads fast, never "sleeps", and can be hosted free.
 
-| Tab | What it shows |
-|---|---|
-| OVERVIEW | Headline figures, the six segments at a glance, a county respondents map |
-| SEGMENT PROFILES | Pick a segment: demographic / behavioural / psychographic drivers, livelihood pathway, estimated national size, where it is most prevalent |
-| DEEP DIVES | Every survey question by segment (dimension, section, topic, search, segment filters) |
-| SELF ASSESSMENT | 12 questions, one at a time; scored in the browser against the saved model |
+| Tab | Route | What it shows |
+|---|---|---|
+| OVERVIEW | `/` | Why and how the study was done, how to use the dashboard, the six segments (donut + list), headline figures |
+| SEGMENTS OVERVIEW | `/segments/` | A card per segment; click for its story, quote, enablers/barriers, pathway and opportunity areas (`?seg=3` opens one) |
+| SEGMENTS DATA | `/profiles/` | "All segments" comparison (profile table, pathway, shaded driver table) or one segment's drivers and pathway vs all surveyed (`?seg=3`) |
+| DEEP DIVES | `/deep-dives/` | Every survey question by segment; single-choice questions with up to six answers are shown as pies |
+| SELF ASSESSMENT | `/self-assessment/` | 12 questions, one at a time; scored in the browser against the saved model |
+| METHODOLOGY | `/methodology/` | Study design, sample, segmentation and sizing method, driver definitions, caveats |
+
+Segment illustrations live in `public/images/segments/` (copied from `shiny_dashboard/www/` by the export script).
 
 ## Run it
 
