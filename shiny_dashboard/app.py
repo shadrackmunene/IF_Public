@@ -107,8 +107,6 @@ overview_panel = ui.nav_panel(
         ui.p(STUDY["what"], class_="lead"),
         class_="hero",
     ),
-    ui.h4("Why this study"),
-    ui.div(*[ui.div(ui.h6(t), ui.p(d), class_="why-card") for t, d in STUDY["why"]], class_="why-grid"),
     ui.h4("Six segments of Kenyan youth"),
     ui.row(
         ui.column(5, ui.div(ui.h6("Estimated share of young people aged 16 to 30"),
@@ -124,6 +122,8 @@ overview_panel = ui.nav_panel(
             class_="mini-list",
         )),
     ),
+    ui.h4("Why this study"),
+    ui.div(*[ui.div(ui.h6(t), ui.p(d), class_="why-card") for t, d in STUDY["why"]], class_="why-grid"),
     ui.h4("How to use this dashboard"),
     ui.div(*[ui.div(ui.tags.button(t.title(), class_="btn btn-outline-primary nav-jump", **{"data-tab": t}),
                     ui.span(d), class_="howto-row") for t, d in _HOW_TO], class_="howto"),

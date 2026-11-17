@@ -27,11 +27,6 @@ export default function OverviewPage() {
         <p className="lead">{d.study.what}</p>
       </div>
 
-      <h4>Why this study</h4>
-      <div className="why-grid">
-        {d.study.why.map(([t, desc]) => <div key={t} className="why-card"><h6>{t}</h6><p>{desc}</p></div>)}
-      </div>
-
       <h4>Six segments of Kenyan youth</h4>
       <div className="two-col">
         <ChartCard title="Estimated share of young people aged 16 to 30" build={() => segmentShareDonut(d.population, d.sizes)} height={340} deps={[d]} />
@@ -47,6 +42,11 @@ export default function OverviewPage() {
             </Link>
           ))}
         </div>
+      </div>
+
+      <h4>Why this study</h4>
+      <div className="why-grid">
+        {d.study.why.map(([t, desc]) => <div key={t} className="why-card"><h6>{t}</h6><p>{desc}</p></div>)}
       </div>
 
       <h4>How to use this dashboard</h4>
