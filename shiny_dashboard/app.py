@@ -817,8 +817,6 @@ def server(input, output, session):
             ui.h6("Where the young people surveyed live"),
             ui.p("Darker counties had more young people surveyed; grey counties were not surveyed.", class_="card-sub"),
             ui.HTML(plots.to_html(plots.county_map(counts))),
-            ui.p(f"Counties with fewer than {data.MIN_COUNTY_N} respondents are not shown. County boundaries: "
-                 "geoBoundaries (RCMRD GeoPortal, 2020), public domain.", class_="footnote"),
             ui.p("Not shown on the map (name not recognised): " + ", ".join(missed), class_="footnote")
             if missed else None,
             class_="result-card chart-card",
