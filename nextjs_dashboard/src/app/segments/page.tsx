@@ -1,31 +1,36 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useDashboard } from "@/components/DataProvider";
+import Modal from "@/components/Modal";
 import { Opportunities, PathwayBlock, SegmentHeader, SegmentImage } from "@/components/SegmentBlocks";
 import { SEGMENT_IDS, SEGMENT_PALETTES, segName } from "@/lib/theme";
 
-/** One card per segment (illustration, traits, size, key figures); click a card for the segment's story,
- *  pathway and opportunity areas. /segments/?seg=3 opens on that segment. */
+/** One card per segment (illustration, traits, size, key figures); click a card to open the segment's story,
+ *  pathway and opportunity areas in a pop-up window. /segments/?seg=3 opens with that segment's window showing. */
 export default function SegmentsPage() {
   const d = useDashboard();
   const [seg, setSeg] = useState<string>(SEGMENT_IDS[0]);
-  const detail = useRef<HTMLDivElement>(null);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     const want = new URLSearchParams(window.location.search).get("seg");
     if (want && (SEGMENT_IDS as readonly string[]).includes(want)) {
       setSeg(want);
-      setTimeout(() => detail.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 200);
+      setOpen(true);
     }
   }, []);
 
   const pick = (s: string) => {
     setSeg(s);
+    setOpen(true);
     window.history.replaceState(null, "", `?seg=${s}`);
-    setTimeout(() => detail.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 50);
   };
+  const close = useCallback(() => {
+    setOpen(false);
+    window.history.replaceState(null, "", window.location.pathname);
+  }, []);
 
   const c = d.profiles[seg];
   const dark = SEGMENT_PALETTES[seg][0];
@@ -43,8 +48,8 @@ export default function SegmentsPage() {
           const p = d.profiles[s];
           const [pdark, mid, , light] = SEGMENT_PALETTES[s];
           return (
-            <div key={s} role="button" tabIndex={0} aria-label={`Show ${segName(s)}`} aria-pressed={seg === s}
-              className={"seg-card" + (seg === s ? " selected" : "")} style={{ ["--seg" as any]: mid }}
+            <div key={s} role="button" tabIndex={0} aria-label={`Show ${segName(s)}`} aria-haspopup="dialog"
+              className={"seg-card" + (open && seg === s ? " selected" : "")} style={{ ["--seg" as any]: mid }}
               onClick={() => pick(s)} onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); pick(s); } }}>
               <div className="seg-card-img" style={{ background: light }}><SegmentImage d={d} seg={s} /></div>
               <div className="seg-card-body">
@@ -67,7 +72,9 @@ export default function SegmentsPage() {
         })}
       </div>
 
-      <div ref={detail} className="segment-detail card">
+      {open && (
+      <Modal title={`Segment ${c.number}: ${segName(seg)}`} onClose={close} wide>
+      <div className="segment-detail">
         <SegmentHeader d={d} seg={seg} />
         <div className="two-col wide-left">
           <div>
@@ -89,6 +96,8 @@ export default function SegmentsPage() {
           <Link className="btn" href={`/profiles/?seg=${seg}`}>See the data for {segName(seg)} →</Link>
         </div>
       </div>
+      </Modal>
+      )}
     </main>
   );
 }

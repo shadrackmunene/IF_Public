@@ -159,9 +159,9 @@ def _segment_card(s: str) -> ui.Tag:
             ui.div("Read their story →", class_="seg-more", style=f"color:{dark}"),
             class_="seg-card-body",
         ),
-        class_="seg-card" + (" selected" if s == ORDER[0] else ""),
+        class_="seg-card",
         style=f"--seg:{mid}",
-        **{"data-seg": s, "role": "button", "tabindex": "0", "aria-label": f"Show {NAMES[s]}"},
+        **{"data-seg": s, "role": "button", "tabindex": "0", "aria-label": f"Show {NAMES[s]}", "aria-haspopup": "dialog"},
     )
 
 
@@ -172,7 +172,6 @@ segments_panel = ui.nav_panel(
          "as in the study report, broadly from those who most need help to establish a livelihood to those who most "
          "need help to progress. Click a segment to read its story, its pathway and what could help.", class_="lead-sm"),
     ui.div(*[_segment_card(s) for s in ORDER], class_="seg-grid"),
-    ui.div(ui.output_ui("segment_detail"), id="segment-detail"),
 )
 
 # ---------------------------------------------------------------------------
@@ -445,9 +444,7 @@ _nav_js = """
     if (!window.Shiny || !Shiny.setInputValue) return;
     if (el.classList.contains("seg-card")) {
       pickCard(el.dataset.seg);
-      Shiny.setInputValue("card_seg", el.dataset.seg, {priority: "event"});
-      var d = document.getElementById("segment-detail");
-      if (d) setTimeout(function () { d.scrollIntoView({behavior: "smooth", block: "start"}); }, 150);
+      Shiny.setInputValue("card_seg", el.dataset.seg, {priority: "event"});  // server opens the segment pop-up
     } else if (el.classList.contains("seg-link")) {
       pickCard(el.dataset.seg);
       Shiny.setInputValue("goto_segment", el.dataset.seg, {priority: "event"});
@@ -566,18 +563,16 @@ def _card(title: str, html: str, **style) -> ui.Tag:
 def server(input, output, session):
 
     # ---- Navigation between tabs -------------------------------------------
-    card_seg = reactive.value(ORDER[0])
-
     @reactive.effect
     @reactive.event(input.card_seg)
     def _pick_card():
-        card_seg.set(input.card_seg())
+        _show_segment_modal(input.card_seg())
 
     @reactive.effect
     @reactive.event(input.goto_segment)
     def _goto_segment():
-        card_seg.set(input.goto_segment())
         ui.update_navset("main_nav", selected=TAB_SEGMENTS)
+        _show_segment_modal(input.goto_segment())
 
     @reactive.effect
     @reactive.event(input.goto_tab)
@@ -587,6 +582,7 @@ def server(input, output, session):
     @reactive.effect
     @reactive.event(input.goto_data)
     def _goto_data():
+        ui.modal_remove()  # the "See the data" button sits inside the segment pop-up
         ui.update_radio_buttons("data_seg", selected=input.goto_data())
         ui.update_navset("main_nav", selected=TAB_DATA)
 
@@ -596,9 +592,25 @@ def server(input, output, session):
         return ui.HTML(plots.to_html(plots.segment_share_donut(data.population(), SIZES)))
 
     # ---- Segments overview -------------------------------------------------
-    @render.ui
-    def segment_detail():
-        s = card_seg.get()
+    def _show_segment_modal(s: str):
+        """The segment's story, pathway and opportunity areas in a pop-up window (× and Close), like the
+        self-assessment results."""
+        if s not in SEGMENTS:
+            return
+        ui.modal_show(
+            ui.modal(
+                _segment_detail(s),
+                title=ui.TagList(
+                    ui.span(f"Segment {SEGMENTS[s]['number']}: {NAMES[s]}"),
+                    ui.tags.button("×", type="button", class_="modal-x", data_bs_dismiss="modal", aria_label="Close"),
+                ),
+                size="xl",
+                easy_close=True,
+                footer=ui.modal_button("Close"),
+            )
+        )
+
+    def _segment_detail(s: str) -> ui.Tag:
         c = SEGMENTS[s]
         dark = SEGMENT_PALETTES[s][0]
         return ui.div(
@@ -620,7 +632,7 @@ def server(input, output, session):
             _opportunities_block(s),
             ui.div(ui.tags.button(f"See the data for {NAMES[s]} →", class_="btn btn-primary data-jump",
                                   **{"data-seg": s}), class_="detail-actions"),
-            class_="segment-detail result-card",
+            class_="segment-detail in-modal",
         )
 
     # ---- Segments data -----------------------------------------------------

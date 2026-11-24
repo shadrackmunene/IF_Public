@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useDashboard } from "@/components/DataProvider";
 import ChartCard from "@/components/ChartCard";
 import { DistinctLegend, DistinctList } from "@/components/Distinct";
+import Modal from "@/components/Modal";
 import { DefiningList, SegmentHeader, SegmentImage } from "@/components/SegmentBlocks";
 import { countySummary, populationEstimate } from "@/lib/data";
 import { driverBarChart, pathwayStageChart } from "@/lib/plots";
@@ -11,26 +12,30 @@ import { SEGMENT_IDS, SEGMENT_PALETTES, r0, segName } from "@/lib/theme";
 
 const CATS: [string, string][] = [["Demographic", "Demographic"], ["Behavioral", "Behavioural"], ["Psychographic", "Psychometric"]];
 
-/** One card per segment with its size and the two to four drivers that set it apart; click a card for the
- *  segment's full data (drivers, pathway, technical notes). /segments/?seg=3 opens on that segment. */
+/** One card per segment with its size and the two to four drivers that set it apart; click a card to open the
+ *  segment's full data (drivers, pathway, technical notes) in a pop-up window. /segments/?seg=3 opens it directly. */
 export default function SegmentsPage() {
   const d = useDashboard();
   const [seg, setSeg] = useState<string>(SEGMENT_IDS[0]);
-  const detail = useRef<HTMLDivElement>(null);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     const want = new URLSearchParams(window.location.search).get("seg");
     if (want && (SEGMENT_IDS as readonly string[]).includes(want)) {
       setSeg(want);
-      setTimeout(() => detail.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 200);
+      setOpen(true);
     }
   }, []);
 
   const pick = (s: string) => {
     setSeg(s);
+    setOpen(true);
     window.history.replaceState(null, "", `?seg=${s}`);
-    setTimeout(() => detail.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 50);
   };
+  const close = useCallback(() => {
+    setOpen(false);
+    window.history.replaceState(null, "", window.location.pathname);
+  }, []);
 
   const nBySeg: Record<string, number> = Object.fromEntries(d.sizes.map((s) => [s.segment, s.n]));
   nBySeg["All"] = d.sizes.reduce((a, s) => a + s.n, 0);
@@ -49,8 +54,8 @@ export default function SegmentsPage() {
           const p = d.profiles[s];
           const [pdark, mid, , light] = SEGMENT_PALETTES[s];
           return (
-            <div key={s} role="button" tabIndex={0} aria-label={`Show data for ${segName(s)}`} aria-pressed={seg === s}
-              className={"seg-card" + (seg === s ? " selected" : "")} style={{ ["--seg" as any]: mid }}
+            <div key={s} role="button" tabIndex={0} aria-label={`Show data for ${segName(s)}`} aria-haspopup="dialog"
+              className={"seg-card" + (open && seg === s ? " selected" : "")} style={{ ["--seg" as any]: mid }}
               onClick={() => pick(s)} onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); pick(s); } }}>
               <div className="seg-card-top" style={{ background: light }}>
                 <SegmentImage d={d} seg={s} className="seg-card-thumb" />
@@ -70,9 +75,11 @@ export default function SegmentsPage() {
         })}
       </div>
 
-      <div ref={detail} className="segment-detail">
-        <SegmentView seg={seg} nBySeg={nBySeg} />
-      </div>
+      {open && (
+        <Modal title={`Segment ${d.profiles[seg].number}: ${segName(seg)}`} onClose={close} wide>
+          <div className="segment-detail"><SegmentView seg={seg} nBySeg={nBySeg} /></div>
+        </Modal>
+      )}
     </main>
   );
 }
