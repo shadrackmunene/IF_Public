@@ -285,3 +285,7 @@ a.mini-row { color: inherit; text-decoration: none; }
 .dv-key.tick-all { width: 2px; height: 14px; background: var(--text); }
 .dv-sentence { font-size: .9rem; line-height: 1.35; margin: 0 0 2px; }
 .stat-value.words { font-size: 19px; line-height: 1.25; }
+.map-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+.map-head h6 { margin: 0; }
+.map-pick { font-size: .88rem; color: var(--muted); }
+.map-pick select { margin-left: 6px; padding: 4px 8px; border: 1px solid var(--border); border-radius: 6px; font: inherit; color: var(--text); background: var(--panel); }

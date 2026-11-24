@@ -2,8 +2,10 @@
 
 import { useDashboard } from "@/components/DataProvider";
 import ChartCard from "@/components/ChartCard";
+import CountyMap from "@/components/CountyMap";
 import { MIN_COUNTY_N } from "@/lib/data";
-import { countyMap, segmentSizeChart, unmatchedCounties } from "@/lib/plots";
+import { segmentSizeChart, unmatchedCounties } from "@/lib/plots";
+import { BRAND } from "@/lib/theme";
 
 /** Technical documentation: study design, sample, segmentation and sizing method, definitions and caveats. */
 export default function MethodologyPage() {
@@ -57,9 +59,12 @@ export default function MethodologyPage() {
         {d.counties.length > 0 && (
           <div className="card chart-card">
             <h6>Where the young people surveyed live</h6>
-            <p className="card-sub">Bubble size shows the number of young people surveyed in each county.</p>
-            <ChartCard build={() => countyMap(d.counties)} height={520} deps={[d]} bare />
-            <p className="footnote">Counties with fewer than {MIN_COUNTY_N} respondents are not shown.</p>
+            <p className="card-sub">Darker counties had more young people surveyed; grey counties were not surveyed.</p>
+            <CountyMap rows={d.counties.map((c) => ({ county: c.county, value: c.n,
+              hover: `<b>${c.county}</b><br>${c.n} young people surveyed (${c.pct}% of all surveyed)` }))}
+              colors={["#D7ECE3", BRAND]} title="Surveyed" deps={[d]} />
+            <p className="footnote">Counties with fewer than {MIN_COUNTY_N} respondents are not shown. County boundaries: geoBoundaries
+              (RCMRD GeoPortal, 2020), public domain.</p>
             {missed.length > 0 && <p className="footnote">Not shown on the map (name not recognised): {missed.join(", ")}</p>}
           </div>
         )}

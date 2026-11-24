@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { useDashboard } from "@/components/DataProvider";
 import ChartCard from "@/components/ChartCard";
@@ -118,7 +119,7 @@ function SegmentView({ seg, nBySeg }: { seg: string; nBySeg: Record<string, numb
         )}
         {where && <p>{where.replace("Most prevalent in", "Among the counties surveyed, most common in")}</p>}
         <p>“What sets them apart” ranks the segmentation drivers by how far the segment sits from the other five, on each driver&apos;s
-          full scale. See Methodology.</p>
+          full scale. See <Link href="/methodology/">Methodology</Link>.</p>
       </div>
     </>
   );

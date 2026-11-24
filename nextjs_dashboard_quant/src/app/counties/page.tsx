@@ -1,24 +1,55 @@
 "use client";
 
+import { useState } from "react";
 import { useDashboard } from "@/components/DataProvider";
 import ChartCard from "@/components/ChartCard";
+import CountyMap from "@/components/CountyMap";
 import { MIN_COUNTY_N } from "@/lib/data";
-import { countyMap, countySegmentMix } from "@/lib/plots";
-import { SEGMENT_IDS, SEGMENT_PALETTES, segName } from "@/lib/theme";
+import { shareWords } from "@/lib/phrases";
+import { countySegmentMix } from "@/lib/plots";
+import { BRAND, SEGMENT_IDS, SEGMENT_PALETTES, segName } from "@/lib/theme";
 
-/** Where the segments are found: segment mix by county and each segment's most common counties. */
+/** Where the segments are found: a county map (shaded by respondents or by one segment's share), the segment mix
+ *  by county and each segment's most common counties. */
 export default function CountiesPage() {
   const d = useDashboard();
+  const [shade, setShade] = useState<string>("n");
   const counties = [...new Set(d.prevalence.map((r) => r.county))]
     .map((c) => ({ county: c, n: d.prevalence.find((r) => r.county === c)!.n_county }))
     .sort((a, b) => b.n - a.n);
+
+  const mapRows = shade === "n"
+    ? d.counties.map((c) => ({ county: c.county, value: c.n,
+        hover: `<b>${c.county}</b><br>${c.n} young people surveyed (${c.pct}% of all surveyed)` }))
+    : d.prevalence.filter((r) => r.segment === shade).map((r) => ({ county: r.county, value: r.pct_of_county,
+        hover: `<b>${r.county}</b><br>${segName(shade)}: ${shareWords(r.pct_of_county)} of the young people surveyed here ` +
+          `(${r.pct_of_county.toFixed(0)}%, ${r.n} of ${r.n_county})` }));
+  const colors: [string, string] = shade === "n" ? ["#D7ECE3", BRAND] : [SEGMENT_PALETTES[shade][3], SEGMENT_PALETTES[shade][0]];
+
   return (
     <main className="page">
       <h2>Segments by county</h2>
       <p className="lead-sm">
-        The mix of segments among the young people surveyed in each of the nine counties. Counties were sampled, not
-        nationally representative, so compare the mix between counties rather than reading each bar as the county&apos;s population.
+        Where the young people surveyed live and the mix of segments in each of the nine counties. Counties were sampled, not
+        nationally representative, so compare counties with each other rather than reading a figure as the county&apos;s population.
       </p>
+
+      <div className="card chart-card">
+        <div className="map-head">
+          <h6>Kenya&apos;s counties: {shade === "n" ? "young people surveyed" : `share of respondents who are ${segName(shade)}`}</h6>
+          <label className="map-pick">Shade counties by{" "}
+            <select value={shade} onChange={(e) => setShade(e.target.value)}>
+              <option value="n">Number of young people surveyed</option>
+              {SEGMENT_IDS.map((s) => <option key={s} value={s}>{segName(s)} (share)</option>)}
+            </select>
+          </label>
+        </div>
+        <p className="card-sub">Grey counties were not surveyed. Hover over a county for its figures.</p>
+        <CountyMap rows={mapRows} colors={colors} title={shade === "n" ? "Surveyed" : "% of county"} suffix={shade === "n" ? "" : "%"}
+          greyHover={shade === "n" ? "Not surveyed" : `Not surveyed, or fewer than ${MIN_COUNTY_N} ${segName(shade)} respondents`}
+          deps={[shade, d]} />
+        <p className="footnote">County boundaries: geoBoundaries (RCMRD GeoPortal, 2020), public domain.</p>
+      </div>
 
       <ChartCard title="Segment mix of the young people surveyed, by county" build={() => countySegmentMix(d.prevalence, d.sizes)}
         height={60 + 44 * (counties.length + 1)} deps={[d]} />
@@ -62,12 +93,6 @@ export default function CountiesPage() {
         – : fewer than {MIN_COUNTY_N} respondents in that county and segment, not shown. Counties with fewer than 15 respondents are not
         ranked.
       </p>
-
-      <div className="card chart-card" style={{ marginTop: 18 }}>
-        <h6>Where the young people surveyed live</h6>
-        <p className="card-sub">Bubble size shows the number of young people surveyed in each county.</p>
-        <ChartCard build={() => countyMap(d.counties)} height={520} deps={[d]} bare />
-      </div>
     </main>
   );
 }

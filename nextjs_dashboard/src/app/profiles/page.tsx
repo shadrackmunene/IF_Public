@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useDashboard } from "@/components/DataProvider";
 import ChartCard from "@/components/ChartCard";
@@ -67,14 +68,14 @@ function AllView({ nBySeg }: { nBySeg: Record<string, number> }) {
       <CompareTable d={d} />
       <h5>Livelihood pathway</h5>
       <ChartCard title="Share of each segment that has reached each stage of the pathway"
-        subtitle="The grey line shows all young people surveyed. Stage definitions are on the Methodology tab."
+        subtitle={<>The grey line shows all young people surveyed. Stage definitions are on the <Link href="/methodology/">Methodology tab</Link>.</>}
         build={() => pathwayCompareChart(d.stages, d.stage_order, nBySeg)} height={400} deps={[d]} />
       <h5>Segmentation drivers across the six segments</h5>
       <p className="text-muted">Darker cells are higher values within each row. ▲ marks the highest segment, ▼ the lowest.</p>
       <DriverHeatmap drivers={d.drivers} />
       <p className="footnote">
         Estimates of national size are directional, census-based model estimates; all other figures describe the young people surveyed
-        and are not weighted. See Methodology.
+        and are not weighted. See <Link href="/methodology/">Methodology</Link>.
       </p>
     </>
   );

@@ -1,11 +1,12 @@
 "use client";
 
 import Plot from "./Plot";
+import type { ReactNode } from "react";
 import type { PlotSpec } from "@/lib/types";
 
 /** A chart in a card. `bare` drops the card frame (for a chart placed inside another card). */
 export default function ChartCard({ title, subtitle, build, height, deps, bare = false }: {
-  title?: string; subtitle?: string; build: () => PlotSpec | null; height: number; deps: unknown[]; bare?: boolean;
+  title?: string; subtitle?: ReactNode; build: () => PlotSpec | null; height: number; deps: unknown[]; bare?: boolean;
 }) {
   const body = (
     <>

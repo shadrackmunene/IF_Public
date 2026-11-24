@@ -4,8 +4,10 @@ percentage and its sample size, e.g. "59% (n=124)"."""
 
 from __future__ import annotations
 
+import json as _json
 import re as _re
 import textwrap
+from pathlib import Path as _Path
 
 import pandas as pd
 import plotly.graph_objects as go
@@ -622,26 +624,55 @@ def unmatched_counties(counts: pd.DataFrame) -> list[str]:
     return [c for c in counts["county"] if _county_key(c) not in COUNTY_CENTROIDS]
 
 
+_GEO_FILE = _Path(__file__).parent / "geo" / "kenya-counties.geojson"
+_GEO_CACHE: dict | None = None
+
+
+def kenya_counties() -> dict:
+    """All 47 county boundaries (geoBoundaries gbOpen KEN ADM1, RCMRD GeoPortal 2020, public domain)."""
+    global _GEO_CACHE
+    if _GEO_CACHE is None:
+        _GEO_CACHE = _json.loads(_GEO_FILE.read_text(encoding="utf-8"))
+    return _GEO_CACHE
+
+
+def _label_point(geom: dict) -> tuple[float, float]:
+    polys = [geom["coordinates"]] if geom["type"] == "Polygon" else geom["coordinates"]
+    ring = max(polys, key=lambda p: len(p[0]))[0]
+    xs, ys = [p[0] for p in ring], [p[1] for p in ring]
+    return (min(xs) + max(xs)) / 2, (min(ys) + max(ys)) / 2
+
+
 def county_map(counts: pd.DataFrame) -> go.Figure:
-    """Bubble map of respondents per county: bubble area = number of respondents."""
-    df = counts[counts["county"].map(lambda c: _county_key(c) in COUNTY_CENTROIDS)].copy()
-    df["lat"] = df["county"].map(lambda c: COUNTY_CENTROIDS[_county_key(c)][0])
-    df["lon"] = df["county"].map(lambda c: COUNTY_CENTROIDS[_county_key(c)][1])
-    top = float(df["n"].max()) if len(df) else 1.0
-    fig = go.Figure(go.Scattergeo(
-        lat=df["lat"], lon=df["lon"], mode="markers+text",
-        text=df["county"].str.replace(" County", "", regex=False), textposition="top center",
-        textfont=dict(size=11, color=DARK_TEXT),
-        marker=dict(size=14 + 46 * (df["n"] / top) ** 0.5, color=BRAND, opacity=0.62,
-                    line=dict(color="white", width=1.5)),
-        customdata=df[["n", "pct"]].to_numpy(),
-        hovertemplate="<b>%{text}</b><br>%{customdata[0]} respondents (%{customdata[1]}%)<extra></extra>",
+    """Kenya county map: every county outlined, counties not surveyed in light grey, surveyed counties shaded by
+    the number of young people surveyed and labelled. Same look as the Next.js dashboards."""
+    geo = kenya_counties()
+    feats = geo["features"]
+    by_key = {_county_key(f["id"]): f for f in feats}
+    df = counts[counts["county"].map(lambda c: _county_key(c) in by_key)].copy()
+    df["id"] = df["county"].map(lambda c: by_key[_county_key(c)]["id"])
+    pts = [_label_point(by_key[_county_key(c)]["geometry"]) for c in df["county"]]
+    fig = go.Figure()
+    fig.add_trace(go.Choropleth(
+        geojson=geo, featureidkey="id", locations=[f["id"] for f in feats], z=[0] * len(feats),
+        colorscale=[[0, "#EEF0EC"], [1, "#EEF0EC"]], showscale=False, marker_line=dict(color="#A7AFAB", width=0.6),
+        text=[f["id"] for f in feats], hovertemplate="<b>%{text}</b><br>Not surveyed<extra></extra>",
     ))
-    fig.update_geos(
-        scope="africa", resolution=50, showcountries=True, countrycolor="#C9CDD6", showland=True,
-        landcolor="#F6F7F5", showocean=True, oceancolor="#E6F2EE", showlakes=True, lakecolor="#E6F2EE",
-        lataxis_range=[-5.2, 5.6], lonaxis_range=[33.4, 42.4], projection_type="mercator",
-    )
-    fig.update_layout(height=520, margin=dict(l=0, r=0, t=0, b=0), paper_bgcolor="white", dragmode=False,
+    fig.add_trace(go.Choropleth(
+        geojson=geo, featureidkey="id", locations=df["id"], z=df["n"], colorscale=[[0, "#D7ECE3"], [1, BRAND]],
+        marker_line=dict(color="white", width=1.2),
+        colorbar=dict(title=dict(text="Surveyed", side="right"), thickness=12, len=0.6, outlinewidth=0),
+        customdata=df[["n", "pct"]].to_numpy(), text=df["id"],
+        hovertemplate="<b>%{text}</b><br>%{customdata[0]} young people surveyed (%{customdata[1]}% of all surveyed)"
+                      "<extra></extra>",
+    ))
+    fig.add_trace(go.Scattergeo(
+        lon=[p[0] for p in pts], lat=[p[1] for p in pts], mode="text", text=df["id"],
+        # Nairobi is small and sits next to Machakos: push the two labels apart
+        textposition=[{"Nairobi": "middle left", "Machakos": "middle right"}.get(i, "middle center") for i in df["id"]],
+        textfont=dict(size=11, color=DARK_TEXT), hoverinfo="skip", showlegend=False,
+    ))
+    fig.update_geos(visible=False, fitbounds="locations", projection_type="mercator", bgcolor="white")
+    fig.update_layout(height=560, margin=dict(l=0, r=0, t=0, b=0), paper_bgcolor="white", dragmode=False,
                       font=dict(family="sans-serif", color=DARK_TEXT))
     return fig

@@ -83,7 +83,12 @@ def _seg_label(segment: str, suffix: str = "") -> ui.Tag:
     return ui.span(ui.span(class_="dot", style=f"background:{SEGMENT_COLORS[segment]}"), NAMES[segment] + suffix)
 
 
-def _chart_card(title: str, fig, subtitle: str | None = None) -> ui.Tag:
+def _method_link(text: str = "Methodology") -> ui.Tag:
+    """In-text link that switches to the Methodology tab (handled by the nav-jump click script)."""
+    return ui.tags.a(text, href="#", class_="nav-jump method-link", **{"data-tab": TAB_METHOD})
+
+
+def _chart_card(title: str, fig, subtitle=None) -> ui.Tag:
     return ui.div(ui.h6(title), ui.p(subtitle, class_="card-sub") if subtitle else None,
                   ui.HTML(plots.to_html(fig)), class_="result-card chart-card")
 
@@ -131,7 +136,7 @@ overview_panel = ui.nav_panel(
     *[ui.div(ui.h6(g["title"], class_="group-title"), ui.HTML(overview_cards.cards_html(g["cards"], g["palette"])))
       for g in overview_cards.groups(OVERVIEW)],
     ui.p(f"Figures describe the {OVERVIEW['n_respondents']:,} young people surveyed in nine counties and are not "
-         "weighted to the national population. See Methodology.", class_="footnote"),
+         "weighted to the national population. See ", _method_link(), ".", class_="footnote"),
 )
 
 # ---------------------------------------------------------------------------
@@ -456,7 +461,10 @@ _nav_js = """
   }
   document.addEventListener("click", function (e) {
     var el = e.target.closest(".seg-card, .seg-link, .nav-jump, .data-jump");
-    if (el) act(el);
+    if (el) {
+      if (el.tagName === "A") e.preventDefault();  // in-text links such as "See Methodology" switch tabs, not jump to #
+      act(el);
+    }
   });
   document.addEventListener("keydown", function (e) {
     if (e.key !== "Enter" && e.key !== " ") return;
@@ -577,6 +585,7 @@ def server(input, output, session):
     @reactive.effect
     @reactive.event(input.goto_tab)
     def _goto_tab():
+        ui.modal_remove()  # in case the link was clicked inside a pop-up
         ui.update_navset("main_nav", selected=input.goto_tab())
 
     @reactive.effect
@@ -648,13 +657,14 @@ def server(input, output, session):
             ui.h5("Livelihood pathway"),
             _chart_card("Share of each segment that has reached each stage of the pathway",
                         plots.pathway_compare_chart(STAGE_TABLE, N_BY_SEGMENT),
-                        "The grey line shows all young people surveyed. Stage definitions are on the Methodology tab."),
+                        ui.TagList("The grey line shows all young people surveyed. Stage definitions are on the ",
+                                   _method_link("Methodology tab"), ".")),
             ui.h5("Segmentation drivers across the six segments"),
             ui.p("Darker cells are higher values within each row. ▲ marks the highest segment, ▼ the lowest.",
                  class_="text-muted"),
             ui.HTML(compare.driver_heatmap_html(DRIVER_TABLE)),
             ui.p("Estimates of national size are directional, census-based model estimates; all other figures "
-                 "describe the young people surveyed and are not weighted. See Methodology.", class_="footnote"),
+                 "describe the young people surveyed and are not weighted. See ", _method_link(), ".", class_="footnote"),
         )
 
     def _segment_view(s: str) -> ui.Tag:
@@ -703,9 +713,10 @@ def server(input, output, session):
         missed = plots.unmatched_counties(counts)
         return ui.div(
             ui.h6("Where the young people surveyed live"),
-            ui.p("Bubble size shows the number of young people surveyed in each county.", class_="card-sub"),
+            ui.p("Darker counties had more young people surveyed; grey counties were not surveyed.", class_="card-sub"),
             ui.HTML(plots.to_html(plots.county_map(counts))),
-            ui.p(f"Counties with fewer than {data.MIN_COUNTY_N} respondents are not shown.", class_="footnote"),
+            ui.p(f"Counties with fewer than {data.MIN_COUNTY_N} respondents are not shown. County boundaries: "
+                 "geoBoundaries (RCMRD GeoPortal, 2020), public domain.", class_="footnote"),
             ui.p("Not shown on the map (name not recognised): " + ", ".join(missed), class_="footnote")
             if missed else None,
             class_="result-card chart-card",
