@@ -644,27 +644,38 @@ def _label_point(geom: dict) -> tuple[float, float]:
 
 
 def county_map(counts: pd.DataFrame) -> go.Figure:
-    """Kenya county map: every county outlined, counties not surveyed in light grey, surveyed counties shaded by
-    the number of young people surveyed and labelled. Same look as the Next.js dashboards."""
+    """Kenya county map shaded by the number of young people surveyed (Methodology and Counties tabs)."""
+    rows = pd.DataFrame({
+        "county": counts["county"], "value": counts["n"],
+        "hover": [f"<b>{c}</b><br>{n} young people surveyed ({p}% of all surveyed)"
+                  for c, n, p in zip(counts["county"], counts["n"], counts["pct"])],
+    })
+    return county_choropleth(rows, colors=("#D7ECE3", BRAND), title="Surveyed")
+
+
+def county_choropleth(rows: pd.DataFrame, colors: tuple[str, str], title: str, suffix: str = "",
+                      grey_hover: str = "Not surveyed") -> go.Figure:
+    """Kenya county map: every county outlined, counties not surveyed in light grey, the counties in `rows`
+    (columns county, value, hover) shaded by value and labelled. Same look as the Next.js dashboards."""
     geo = kenya_counties()
     feats = geo["features"]
     by_key = {_county_key(f["id"]): f for f in feats}
-    df = counts[counts["county"].map(lambda c: _county_key(c) in by_key)].copy()
+    df = rows[rows["county"].map(lambda c: _county_key(c) in by_key)].copy()
     df["id"] = df["county"].map(lambda c: by_key[_county_key(c)]["id"])
     pts = [_label_point(by_key[_county_key(c)]["geometry"]) for c in df["county"]]
+    lo, hi = (float(df["value"].min()), float(df["value"].max())) if len(df) else (0.0, 1.0)
     fig = go.Figure()
     fig.add_trace(go.Choropleth(
         geojson=geo, featureidkey="id", locations=[f["id"] for f in feats], z=[0] * len(feats),
         colorscale=[[0, "#EEF0EC"], [1, "#EEF0EC"]], showscale=False, marker_line=dict(color="#A7AFAB", width=0.6),
-        text=[f["id"] for f in feats], hovertemplate="<b>%{text}</b><br>Not surveyed<extra></extra>",
+        text=[f["id"] for f in feats], hovertemplate=f"<b>%{{text}}</b><br>{grey_hover}<extra></extra>",
     ))
     fig.add_trace(go.Choropleth(
-        geojson=geo, featureidkey="id", locations=df["id"], z=df["n"], colorscale=[[0, "#D7ECE3"], [1, BRAND]],
+        geojson=geo, featureidkey="id", locations=df["id"], z=df["value"],
+        zmin=0 if lo == hi else lo, zmax=hi, colorscale=[[0, colors[0]], [1, colors[1]]],
         marker_line=dict(color="white", width=1.2),
-        colorbar=dict(title=dict(text="Surveyed", side="right"), thickness=12, len=0.6, outlinewidth=0),
-        customdata=df[["n", "pct"]].to_numpy(), text=df["id"],
-        hovertemplate="<b>%{text}</b><br>%{customdata[0]} young people surveyed (%{customdata[1]}% of all surveyed)"
-                      "<extra></extra>",
+        colorbar=dict(title=dict(text=title, side="right"), thickness=12, len=0.6, outlinewidth=0, ticksuffix=suffix),
+        text=df["hover"], hovertemplate="%{text}<extra></extra>",
     ))
     fig.add_trace(go.Scattergeo(
         lon=[p[0] for p in pts], lat=[p[1] for p in pts], mode="text", text=df["id"],
@@ -675,4 +686,43 @@ def county_map(counts: pd.DataFrame) -> go.Figure:
     fig.update_geos(visible=False, fitbounds="locations", projection_type="mercator", bgcolor="white")
     fig.update_layout(height=560, margin=dict(l=0, r=0, t=0, b=0), paper_bgcolor="white", dragmode=False,
                       font=dict(family="sans-serif", color=DARK_TEXT))
+    return fig
+
+
+def county_segment_mix(prev: pd.DataFrame, sizes: pd.DataFrame) -> go.Figure:
+    """100% stacked bars: the segment mix of the young people surveyed in each county, with all surveyed on top.
+    Cells hidden for small numbers are pooled into a grey 'Not shown' bar so every row sums to 100%."""
+    totals = prev.groupby("county")["n_county"].first().sort_values()  # largest county at the top
+    n_all = int(sizes["n"].sum())
+    rows = list(totals.index) + ["All surveyed"]
+    labels = [f"{c} (n={int(totals[c])})" for c in totals.index] + [f"<b>All surveyed</b> (n={n_all})"]
+    fig = go.Figure()
+    shown = [0.0] * len(rows)
+    for seg in order_segments(sizes["segment"]):
+        size = sizes[sizes["segment"] == seg].iloc[0]
+        cell = {r.county: r for r in prev[prev["segment"] == seg].itertuples()}
+        pct = [float(cell[c].pct_of_county) if c in cell else 0.0 for c in totals.index] + [float(size["pct"])]
+        ns = [int(cell[c].n) if c in cell else 0 for c in totals.index] + [int(size["n"])]
+        shown = [a + b for a, b in zip(shown, pct)]
+        fig.add_trace(go.Bar(
+            orientation="h", name=SEGMENT_NAMES.get(seg, seg), y=labels, x=[r0(v) for v in pct],
+            marker=dict(color=SEGMENT_COLORS[seg], line=dict(color="white", width=1)),
+            text=[f"{r0(v)}%" if v >= 7 else "" for v in pct], textposition="inside", insidetextanchor="middle",
+            textfont=dict(size=11), customdata=ns,
+            hovertemplate=f"<b>{SEGMENT_NAMES.get(seg, seg)}</b><br>%{{y}}<br>%{{x}}% of young people surveyed there "
+                          "(n=%{customdata})<extra></extra>",
+        ))
+    if any(v < 99 for v in shown):
+        fig.add_trace(go.Bar(
+            orientation="h", name="Not shown (small numbers)", y=labels, x=[max(0.0, 100 - v) for v in shown],
+            marker_color="#E5E7EB", hovertemplate="%{y}<br>%{x:.0f}% in segments with too few respondents to show"
+                                                  "<extra></extra>",
+        ))
+    fig.update_layout(
+        barmode="stack", bargap=0.25, height=60 + 44 * len(rows), margin=dict(l=10, r=10, t=10, b=60),
+        paper_bgcolor="white", plot_bgcolor="white", font=dict(family="sans-serif", color=DARK_TEXT, size=12),
+        xaxis=dict(range=[0, 100], ticksuffix="%", title="% of young people surveyed in the county", showline=True,
+                   linecolor="#CCCCCC", gridcolor="#EEF0F4"),
+        legend=dict(orientation="h", traceorder="normal", y=-0.18, x=0), dragmode=False,
+    )
     return fig

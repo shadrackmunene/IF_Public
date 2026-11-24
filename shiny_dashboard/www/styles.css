@@ -264,6 +264,11 @@ h2 { font-size: 1.5rem; }
 .cmp-table .all-col { background: #F2F3F1; font-weight: 600; text-align: center; }
 .cmp-table .cat-row td { background: var(--brand-light); color: var(--brand); font-weight: 700; font-size: .8rem; text-transform: uppercase; letter-spacing: .04em; }
 .cmp-table .mk { font-size: .75em; }
+/* Counties tab: map title with the "Shade counties by" picker on the right */
+.map-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; flex-wrap: wrap; }
+.map-head h6 { margin: 0 0 8px; }
+.map-head .form-group { margin-bottom: 4px; min-width: 280px; }
+.map-head label { font-size: .85rem; color: var(--muted); }
 .cmp-table.profile td { min-width: 140px; }
 .cmp-table.profile td.num { font-weight: 700; font-size: 1rem; }
 .cmp-img { display: block; width: 64px; height: 64px; object-fit: contain; margin-bottom: 4px; }

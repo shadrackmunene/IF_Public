@@ -25,6 +25,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import hashlib
 
+import pandas as pd
 from shiny import App, reactive, render, ui
 
 import compare
@@ -62,6 +63,7 @@ AGE_MESSAGE = (f"This tool is meant for young people aged {AGE_MIN} to {AGE_MAX}
 
 TAB_OVERVIEW, TAB_SEGMENTS, TAB_DATA = "OVERVIEW", "SEGMENTS OVERVIEW", "SEGMENTS DATA"
 TAB_DEEP, TAB_SELF, TAB_METHOD = "DEEP DIVES", "SELF ASSESSMENT", "METHODOLOGY"
+TAB_COUNTIES = "COUNTIES"
 
 
 def image_url(segment: str) -> str:
@@ -99,6 +101,7 @@ def _chart_card(title: str, fig, subtitle=None) -> ui.Tag:
 _HOW_TO = [
     (TAB_SEGMENTS, "Meet the six segments: who they are, what drives them, and what could help them."),
     (TAB_DATA, "Compare the segments side by side, or look at one segment's data in detail."),
+    (TAB_COUNTIES, "See where the young people surveyed live and the mix of segments in each county."),
     (TAB_DEEP, "Explore every survey question by segment."),
     (TAB_SELF, "Answer 12 questions to see which segment you are most like."),
     (TAB_METHOD, "How the study was done, definitions and caveats."),
@@ -329,6 +332,37 @@ def _method_sections() -> list[ui.Tag]:
     return out
 
 
+# ---------------------------------------------------------------------------
+# COUNTIES
+# ---------------------------------------------------------------------------
+counties_panel = ui.nav_panel(
+    TAB_COUNTIES,
+    ui.h2("Segments by county"),
+    ui.p("Where the young people surveyed live and the mix of segments in each of the nine counties. Counties were "
+         "sampled, not nationally representative, so compare counties with each other rather than reading a figure "
+         "as the county's population.", class_="lead-sm"),
+    ui.div(
+        ui.div(
+            ui.output_ui("county_map_title"),
+            ui.input_select("county_shade", "Shade counties by",
+                            {"n": "Number of young people surveyed",
+                             **{s: f"{NAMES[s]} (share)" for s in ORDER}}, selected="n"),
+            class_="map-head",
+        ),
+        ui.p("Grey counties were not surveyed. Hover over a county for its figures.", class_="card-sub"),
+        ui.output_ui("county_map"),
+        ui.p("County boundaries: geoBoundaries (RCMRD GeoPortal, 2020), public domain.", class_="footnote"),
+        class_="result-card chart-card",
+    ),
+    ui.output_ui("county_mix_chart"),
+    ui.h5("Share of each county's respondents in each segment"),
+    ui.p("Darker cells are higher within each segment (column). ▲ marks the county where the segment is most common.",
+         class_="text-muted"),
+    ui.output_ui("county_table"),
+    ui.p(f"– : fewer than {data.MIN_COUNTY_N} respondents in that county and segment, not shown. Counties with fewer "
+         "than 15 respondents are not ranked.", class_="footnote"),
+)
+
 method_panel = ui.nav_panel(
     TAB_METHOD,
     ui.h2("Methodology and technical notes"),
@@ -484,6 +518,7 @@ app_ui = ui.page_navbar(
     overview_panel,
     segments_panel,
     segment_data_panel,
+    counties_panel,
     *([deep_dives_panel] if deep_dives_panel is not None else []),
     self_assessment_panel,
     method_panel,
@@ -563,6 +598,53 @@ def _technical_footnote(s: str) -> ui.Tag:
 
 def _card(title: str, html: str, **style) -> ui.Tag:
     return ui.div(ui.h6(title), ui.HTML(html), class_="result-card", style="margin-bottom:14px;padding:1rem")
+
+
+# ---------------------------------------------------------------------------
+# Counties tab builders
+# ---------------------------------------------------------------------------
+def _county_map_fig(shade: str):
+    """County map shaded by respondents ("n") or by one segment's share of each county's respondents."""
+    if shade not in SEGMENTS:
+        return plots.county_map(data.county_counts())
+    prev = data.county_prevalence()
+    sub = prev[prev["segment"] == shade]
+    rows = pd.DataFrame({
+        "county": sub["county"], "value": sub["pct_of_county"],
+        "hover": [f"<b>{r.county}</b><br>{NAMES[shade]}: {r.pct_of_county:.0f}% of the young people surveyed "
+                  f"here ({r.n} of {r.n_county})" for r in sub.itertuples()],
+    })
+    dark, _, _, light = SEGMENT_PALETTES[shade]
+    return plots.county_choropleth(
+        rows, colors=(light, dark), title="% of county", suffix="%",
+        grey_hover=f"Not surveyed, or fewer than {data.MIN_COUNTY_N} {NAMES[shade]} respondents")
+
+
+def _county_table() -> ui.Tag:
+    """County x segment shares, shaded within each segment's column; ▲ marks the county where it is most common."""
+    prev = data.county_prevalence()
+    totals = prev.groupby("county")["n_county"].first().sort_values(ascending=False)
+    ranked = prev[prev["n_county"] >= 15]
+    head = ui.tags.tr(ui.tags.th("County"), ui.tags.th("n", class_="num"), *[ui.tags.th(_seg_label(s)) for s in ORDER])
+    body = []
+    for county, n in totals.items():
+        cells = []
+        for s in ORDER:
+            col = ranked[ranked["segment"] == s]["pct_of_county"]
+            row = prev[(prev["county"] == county) & (prev["segment"] == s)]
+            if row.empty:
+                cells.append(ui.tags.td("–", class_="text-muted"))
+                continue
+            v = float(row["pct_of_county"].iloc[0])
+            lo, hi = (float(col.min()), float(col.max())) if len(col) else (v, v)
+            t = (v - lo) / (hi - lo) if hi > lo else 0.0
+            alpha = 0.06 + 0.6 * max(0.0, min(1.0, t))
+            mark = ui.span(" ▲", class_="mk") if v == hi and n >= 15 else None
+            cells.append(ui.tags.td(f"{v:.0f}%", mark, style=f"background:rgba(15,107,82,{alpha:.2f});"
+                                    + ("color:#fff;" if alpha > 0.5 else "")))
+        body.append(ui.tags.tr(ui.tags.th(county, scope="row"), ui.tags.td(int(n), class_="num"), *cells))
+    return ui.div(ui.tags.table(ui.tags.thead(head), ui.tags.tbody(*body), class_="cmp-table heat"),
+                  class_="table-scroll")
 
 
 # ---------------------------------------------------------------------------
@@ -699,6 +781,26 @@ def server(input, output, session):
     def data_view():
         s = input.data_seg()
         return _all_view() if s == "all" else _segment_view(s)
+
+    # ---- Counties ----------------------------------------------------------
+    @render.ui
+    def county_map_title():
+        s = input.county_shade()
+        what = "young people surveyed" if s == "n" else f"share of respondents who are {NAMES[s]}"
+        return ui.h6(f"Kenya's counties: {what}")
+
+    @render.ui
+    def county_map():
+        return ui.HTML(plots.to_html(_county_map_fig(input.county_shade())))
+
+    @render.ui
+    def county_mix_chart():
+        return _chart_card("Segment mix of the young people surveyed, by county",
+                           plots.county_segment_mix(data.county_prevalence(), SIZES))
+
+    @render.ui
+    def county_table():
+        return _county_table()
 
     # ---- Methodology -------------------------------------------------------
     @render.ui

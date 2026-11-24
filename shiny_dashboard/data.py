@@ -130,6 +130,11 @@ _prevalence["segment"] = _prevalence["segment"].astype(str)
 _population = _opt_json("segment_population.json")  # optional: {"source": "...", "segments": {"1": 123456, ...}}
 
 
+def county_prevalence() -> pd.DataFrame:
+    """Share of each county's respondents in each segment (cells under MIN_COUNTY_N already dropped)."""
+    return _prevalence
+
+
 def county_summary(segment: str, top: int = 3) -> str | None:
     """Short text on where a segment is most prevalent, ranked by its share of respondents in each county."""
     sub = _prevalence[(_prevalence["segment"] == str(segment)) & (_prevalence["n_county"] >= 15)]
