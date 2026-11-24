@@ -8,6 +8,14 @@ averages only - no respondent rows, no KEY/UUID, no county/sub-county or other l
         --sav "<...>/data/clean/if_real_livelihood_quantitative_survey_field_clean_v005_segmented.sav" ^
         --out shiny_dashboard/precomputed streamlit_dashboard/precomputed
 
+Weighted run (survey weights from the private repo's scripts/build_survey_weights.py):
+
+    python scripts/aggregate_for_dashboard.py --sav "<...>_segmented_weighted.sav" --weight-col weight ^
+        --out "<private folder for review>"
+
+  With --weight-col every percentage, mean and median is weighted; n_valid / n stay unweighted respondent
+  counts, and the minimum-n suppression rules still apply to those unweighted counts.
+
 Requires: pandas, pyreadstat   (pip install pyreadstat) - used only for this script, not the apps.
 
 Outputs (written to every --out folder):
@@ -64,6 +72,28 @@ EXCLUDE_CODES = {"A104", "B228", "G713", "H814", "A107"}
 NON_ANSWER = re.compile(r"(?i)don.?t know|refus|not applicable|no answer|prefer not")
 
 
+WEIGHT_COL: str | None = None  # set by --weight-col
+
+
+def _w(g: pd.DataFrame, index: pd.Index) -> pd.Series:
+    """Weights for the given rows (1 for every row in an unweighted run)."""
+    if WEIGHT_COL:
+        return pd.to_numeric(g.loc[index, WEIGHT_COL], errors="coerce").fillna(0.0)
+    return pd.Series(1.0, index=index)
+
+
+def _share(gs: pd.Series, mask: pd.Series, w: pd.Series) -> float:
+    return round(100 * float(w[mask].sum() / w.sum()), 1) if w.sum() else 0.0
+
+
+def _wmedian(v: pd.Series, w: pd.Series) -> float:
+    if not WEIGHT_COL or w.nunique() <= 1:
+        return float(v.median())
+    order = v.to_numpy(float).argsort()
+    vv, cw = v.to_numpy(float)[order], w.to_numpy(float)[order].cumsum()
+    return float(vv[min(cw.searchsorted(0.5 * cw[-1]), len(vv) - 1)])
+
+
 def _section(code: str) -> str | None:
     m = QUESTION_CODE.match(code)
     return m.group(1) if m else None
@@ -103,17 +133,20 @@ def build(df: pd.DataFrame, meta) -> tuple[list, list, list]:
                 gs = pd.to_numeric(g[code], errors="coerce").dropna()
                 if len(gs) < MIN_N:
                     continue
+                w = _w(g, gs.index)
                 for k, v in opts:
                     dists.append({"code": code, "segment": gname, "option": k, "option_label": v,
-                                  "pct": round(100 * float((gs == k).mean()), 1), "n_valid": int(len(gs))})
+                                  "pct": _share(gs, gs == k, w), "n_valid": int(len(gs))})
         elif n_unique > MAX_CATEGORIES:
             catalog.append({**base, "type": "numeric"})
             for gname, g in groups.items():
                 gs = pd.to_numeric(g[code], errors="coerce").dropna()
                 if len(gs) < MIN_N:
                     continue
-                nums.append({"code": code, "segment": gname, "mean": round(float(gs.mean()), 2),
-                             "median": round(float(gs.median()), 2), "n_valid": int(len(gs))})
+                w = _w(g, gs.index)
+                mean = float((gs * w).sum() / w.sum()) if w.sum() else float(gs.mean())
+                nums.append({"code": code, "segment": gname, "mean": round(mean, 2),
+                             "median": round(_wmedian(gs, w), 2), "n_valid": int(len(gs))})
     return catalog, dists, nums
 
 
@@ -170,9 +203,10 @@ def profile_payloads(df: pd.DataFrame, meta, names: dict[str, str]) -> tuple[lis
             gs = pd.to_numeric(g[code], errors="coerce").dropna()
             if len(gs) < MIN_N:
                 continue
+            w = _w(g, gs.index)
             for k, v in opts:
                 dists.append({"code": code, "segment": gname, "option": k, "option_label": v,
-                              "pct": round(100 * float((gs == k).mean()), 1), "n_valid": int(len(gs))})
+                              "pct": _share(gs, gs == k, w), "n_valid": int(len(gs))})
     # County of residence by segment (share of each segment living in each county) + prevalence table.
     county = _county_series(df, meta)
     prevalence = []
@@ -190,21 +224,25 @@ def profile_payloads(df: pd.DataFrame, meta, names: dict[str, str]) -> tuple[lis
                 gc = gc[gc.isin(keep)]
                 if len(gc) < MIN_N:
                     continue
+                w = _w(df, gc.index)
                 for i, c in enumerate(keep):
                     n_cell = int((gc == c).sum())
                     if n_cell < MIN_CELL_N:
                         continue
                     dists.append({"code": "COUNTY_RES", "segment": gname, "option": float(i),
                                   "option_label": str(c).replace(" County", ""),
-                                  "pct": round(100 * n_cell / len(gc), 1), "n_valid": int(len(gc))})
+                                  "pct": _share(gc, gc == c, w), "n_valid": int(len(gc))})
             for c in keep:
                 in_c = county == c
                 n_c = int(in_c.sum())
+                w_c = _w(df, in_c[in_c].index)
                 for s in segs:
-                    n_cell = int((in_c & (df[SEGMENT_COL] == int(s))).sum())
+                    in_cell = in_c & (df[SEGMENT_COL] == int(s))
+                    n_cell = int(in_cell.sum())
                     if n_cell >= MIN_CELL_N:
                         prevalence.append({"segment": s, "county": str(c).replace(" County", ""), "n": n_cell,
-                                           "n_county": n_c, "pct_of_county": round(100 * n_cell / n_c, 1)})
+                                           "n_county": n_c,
+                                           "pct_of_county": round(100 * float(w_c[in_cell[in_c]].sum() / w_c.sum()), 1)})
     return catalog, dists, prevalence
 
 
@@ -225,9 +263,16 @@ def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--sav", required=True, type=Path)
     ap.add_argument("--out", required=True, nargs="+", type=Path)
+    ap.add_argument("--weight-col", default=None, help="column of survey weights (e.g. 'weight'); omit for unweighted")
     args = ap.parse_args()
 
     df, meta = pyreadstat.read_sav(str(args.sav), apply_value_formats=False)
+    global WEIGHT_COL
+    if args.weight_col:
+        if args.weight_col not in df.columns:
+            sys.exit(f"--weight-col {args.weight_col!r} is not a column in {args.sav.name}")
+        WEIGHT_COL = args.weight_col
+        print(f"WEIGHTED run: percentages, means and medians use '{WEIGHT_COL}'; n stay unweighted.")
     # Segment names follow the client report's code -> name key (shiny_dashboard/segment_content.py), not the
     # file's segment_name column: that column predates the final naming and labels codes 2, 3 and 4 wrongly
     # (code 4 is the apprenticeship segment, Stability Seekers; code 3 is Skill Investors; code 2 is Income
