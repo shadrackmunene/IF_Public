@@ -1,6 +1,7 @@
 /** Helpers over the dashboard data bundle: sections, topics, county summary, national estimates. */
 import type { Dashboard, Question } from "./types";
 import { questionTitle } from "./plots";
+import { shareWords } from "./phrases";
 
 export const DIMENSION_ORDER = ["Behaviour", "Context", "Psychology"];
 export const ALL_TOPICS = "__all__";
@@ -61,7 +62,7 @@ export function countySummary(d: Dashboard, segment: string, top = 3): string | 
   const sub = d.prevalence.filter((r) => r.segment === segment && r.n_county >= 15)
     .sort((a, b) => b.pct_of_county - a.pct_of_county).slice(0, top);
   if (!sub.length) return null;
-  return "Most prevalent in " + sub.map((r) => `${r.county} (${r.pct_of_county.toFixed(0)}% of respondents there)`).join(", ") + ".";
+  return "Most prevalent in " + sub.map((r) => `${r.county} (${shareWords(r.pct_of_county)} of respondents there, ${r.pct_of_county.toFixed(0)}%)`).join(", ") + ".";
 }
 
 export function populationEstimate(d: Dashboard, segment: string) {

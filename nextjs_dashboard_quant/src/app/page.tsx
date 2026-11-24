@@ -4,8 +4,7 @@ import Link from "next/link";
 import { useDashboard } from "@/components/DataProvider";
 import ChartCard from "@/components/ChartCard";
 import { SegmentImage } from "@/components/SegmentBlocks";
-import { fmtValue } from "@/lib/compare";
-import { distinguishing } from "@/lib/distinct";
+import { distinctSentences } from "@/components/Distinct";
 import { cardGroups } from "@/lib/overviewCards";
 import { segmentShareDonut } from "@/lib/plots";
 import { SEGMENT_IDS, SEGMENT_PALETTES, segName } from "@/lib/theme";
@@ -36,8 +35,8 @@ export default function OverviewPage() {
               <div>
                 <div className="mini-name" style={{ color: SEGMENT_PALETTES[s][0] }}>{segName(s)}</div>
                 <div className="mini-tag">
-                  {distinguishing(d.drivers, s).slice(0, 2).map((i) => (
-                    <span key={i.label} className="mini-fact">{i.label}: <b>{fmtValue(i.value, i.isPct)}</b> (all {fmtValue(i.all, i.isPct)})</span>
+                  {distinctSentences(d.drivers, s).map((p) => (
+                    <span key={p.key} className="mini-fact"><b>{p.lead}</b>{p.rest}</span>
                   ))}
                 </div>
               </div>
@@ -59,7 +58,7 @@ export default function OverviewPage() {
                   <div className="stat-icon" style={{ background: `${mid}33`, color: dark }}>{c.icon}</div>
                   <div>
                     <div className="stat-label">{c.title}</div>
-                    <div className="stat-value" style={{ color: dark }}>{c.value}</div>
+                    <div className={"stat-value" + (c.words ? " words" : "")} style={{ color: dark }}>{c.value}</div>
                     <div className="stat-sub">{c.sub}</div>
                   </div>
                 </div>

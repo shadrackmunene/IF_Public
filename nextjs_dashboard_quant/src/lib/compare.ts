@@ -30,7 +30,10 @@ export function driverRows(drivers: DriverRow[]): { segs: string[]; groups: { ca
 
 const MAX_DEFINING = 6;
 
-export interface Defining { label: string; which: "highest" | "lowest"; value: string; all: string; score: number }
+export interface Defining {
+  label: string; which: "highest" | "lowest"; value: string; all: string; score: number;
+  raw: number; rawAll: number | undefined; isPct: boolean;
+}
 
 /** Drivers on which the segment is clearly the highest or lowest of the six (ties excluded), most distinctive
  *  first: ranked by the gap to the next segment as a share of the driver's range. */
@@ -50,7 +53,7 @@ export function definingDrivers(drivers: DriverRow[], segment: string): Defining
       else if (v < Math.min(...others)) { which = "lowest"; gap = Math.min(...others) - v; }
       if (!which) continue;
       found.push({ label: row.label, which, value: fmtValue(v, row.isPct), all: fmtValue(row.vals["All"], row.isPct),
-        score: spread ? gap / spread : 0 });
+        score: spread ? gap / spread : 0, raw: v, rawAll: row.vals["All"], isPct: row.isPct });
     }
   }
   return (["highest", "lowest"] as const).flatMap((w) =>

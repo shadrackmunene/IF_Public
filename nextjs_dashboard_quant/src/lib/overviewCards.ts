@@ -1,32 +1,39 @@
 /** Headline statistic cards for the Overview page (port of overview_cards.py): a tinted background per group and
  *  an icon per card. Kept short, with whole-number percentages; figures that need method context are left to the
  *  Deep dives tab. */
+import { shareWords } from "./phrases";
 import { SEGMENT_PALETTES, r0 } from "./theme";
 
-export interface Card { title: string; value: string; sub: string; icon: string }
+/** words: the value is an interpreted share ("About two in five"), drawn smaller than a number. */
+export interface Card { title: string; value: string; sub: string; icon: string; words?: boolean }
 export interface CardGroup { title: string; palette: string[]; cards: Card[] }
 
 export function cardGroups(o: Record<string, number>): CardGroup[] {
-  const pct = (k: string) => `${r0(o[k])}%`;
+  // A share reads as words, with the exact percentage in brackets after the sentence (none for all / none).
+  const share = (title: string, k: string, sub: string, icon: string): Card => {
+    const v = o[k];
+    const exact = v >= 99.5 || v <= 0.5 ? "" : ` (${r0(v)}%)`;
+    return { title, value: shareWords(v, true), sub: sub + exact, icon, words: true };
+  };
   return [
     { title: "Who they are", palette: SEGMENT_PALETTES["5"], cards: [
       { title: "Median age", value: `${r0(o.median_age)}`, sub: "years", icon: "🎂" },
-      { title: "Women", value: pct("pct_female"), sub: "of young people surveyed", icon: "👩" },
+      share("Women", "pct_female", "of the young people surveyed are women", "👩"),
       { title: "Median income", value: `KES ${r0(o.median_income / 1000)}K`, sub: "per month, own income", icon: "💰" },
     ] },
     { title: "Education & skills", palette: SEGMENT_PALETTES["3"], cards: [
-      { title: "Secondary", value: pct("pct_secondary_highest"), sub: "secondary school is their highest level", icon: "🏫" },
-      { title: "TVET", value: pct("pct_tvet"), sub: "completed TVET or vocational training", icon: "🛠️" },
-      { title: "University", value: pct("pct_university"), sub: "completed a university degree", icon: "🎓" },
+      share("Secondary", "pct_secondary_highest", "have secondary school as their highest level", "🏫"),
+      share("TVET", "pct_tvet", "have completed TVET or vocational training", "🛠️"),
+      share("University", "pct_university", "have a university degree", "🎓"),
     ] },
     { title: "Work & money", palette: SEGMENT_PALETTES["2"], cards: [
-      { title: "Informal work", value: pct("pct_informal_main"), sub: "of those working are in informal work", icon: "🧰" },
-      { title: "Side income", value: pct("pct_side_activity"), sub: "have a second income activity", icon: "➕" },
-      { title: "Saving", value: pct("pct_saving"), sub: "are saving money in any form", icon: "🐖" },
+      share("Informal work", "pct_informal_main", "of those working are in informal work", "🧰"),
+      share("Side income", "pct_side_activity", "have a second income activity", "➕"),
+      share("Saving", "pct_saving", "are saving money in any form", "🐖"),
     ] },
     { title: "Digital & AI", palette: SEGMENT_PALETTES["6"], cards: [
-      { title: "Smartphone", value: pct("pct_smartphone"), sub: "own a smartphone", icon: "📱" },
-      { title: "AI tools", value: pct("pct_used_ai"), sub: "have used an AI tool", icon: "🤖" },
+      share("Smartphone", "pct_smartphone", "own a smartphone", "📱"),
+      share("AI tools", "pct_used_ai", "have used an AI tool", "🤖"),
     ] },
   ];
 }

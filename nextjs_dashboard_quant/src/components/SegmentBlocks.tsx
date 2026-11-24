@@ -3,6 +3,7 @@
 import type { Dashboard, DriverRow } from "@/lib/types";
 import { assetUrl } from "@/lib/data";
 import { CATEGORY_TITLES, definingDrivers, driverRows, fmtValue } from "@/lib/compare";
+import { describe, shareWords } from "@/lib/phrases";
 import { SEGMENT_COLORS, SEGMENT_IDS, SEGMENT_PALETTES, segName } from "@/lib/theme";
 
 export function SegmentImage({ d, seg, className }: { d: Dashboard; seg: string; className?: string }) {
@@ -16,9 +17,15 @@ export function SegmentHeader({ d, seg, compact = false }: { d: Dashboard; seg: 
   const [dark] = SEGMENT_PALETTES[seg];
   const st = c.stats;
   const size = d.sizes.find((s) => s.segment === seg);
+  // Shares read as words with the exact figure in brackets ("About three in five / are women (62%)").
+  const shareChip = (v: string, pred: string): [string, string] => {
+    const n = parseFloat(v);
+    if (!v.trim().endsWith("%") || Number.isNaN(n)) return [v, pred];
+    return [shareWords(n, true), `${pred}${n >= 99.5 || n <= 0.5 ? "" : ` (${v.trim()})`}`];
+  };
   const chips: [string, string][] = [
-    [st.population, `young people in Kenya (${st.share})`], [st.median_age, "median age"], [st.women, "women"],
-    [st.rural, "live in rural areas"], [st.median_income, "median monthly income"],
+    [st.population, `young people in Kenya (${st.share})`], [st.median_age, "median age"], shareChip(st.women, "are women"),
+    shareChip(st.rural, "live in rural areas"), [st.median_income, "median monthly income"],
   ];
   if (size) chips.push([size.n.toLocaleString("en-US"), "young people surveyed"]);
   return (
@@ -131,9 +138,12 @@ export function DefiningList({ drivers, seg }: { drivers: DriverRow[]; seg: stri
           <div key={w} className="def-col">
             <div className="def-title">{w === "highest" ? "▲ Highest of the six segments" : "▼ Lowest of the six segments"}</div>
             <ul>
-              {group.map((i) => (
-                <li key={i.label}><span>{i.label}</span> <b>{i.value}</b> <span className="text-muted">(all surveyed: {i.all})</span></li>
-              ))}
+              {group.map((i) => {
+                const ph = describe(i.label, i.isPct, i.raw, i.rawAll, i.which);
+                const overall = i.isPct && i.rawAll !== undefined
+                  ? ` Across all young people surveyed: ${shareWords(i.rawAll)}${i.rawAll >= 99.5 || i.rawAll <= 0.5 ? "" : ` (${i.all})`}.` : "";
+                return <li key={i.label}><b>{ph.lead}</b>{ph.rest}.<span className="text-muted">{overall}</span></li>;
+              })}
             </ul>
           </div>
         );
